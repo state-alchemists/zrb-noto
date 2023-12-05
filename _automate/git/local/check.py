@@ -3,6 +3,8 @@ from zrb import runner, Checker, Group, Env, EnvFile, AnyTask, AnyInput
 from .._helper import get_current_branch
 from ...config import NOTO_GIT_REMOTE_NAME
 from ..._group import noto_git_local_group
+from ..fetch import git_fetch
+
 import subprocess
 import os
 
@@ -63,6 +65,7 @@ class GitLocalChecker(Checker):
 git_local_check = GitLocalChecker(
     name='check',
     group=noto_git_local_group,
+    upstreams=[git_fetch],
     git_remote_name=NOTO_GIT_REMOTE_NAME,
 )
 runner.register(git_local_check)

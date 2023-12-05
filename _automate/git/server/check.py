@@ -3,6 +3,8 @@ from zrb import runner, Checker, Group, Env, EnvFile, AnyTask, AnyInput
 from .._helper import get_current_branch
 from ...config import NOTO_GIT_REMOTE_NAME
 from ..._group import noto_git_server_group
+from ..fetch import git_fetch
+
 import subprocess
 import os
 
@@ -50,7 +52,6 @@ class GitServerChecker(Checker):
         # Run the git diff command to compare local and remote branches
         remote_name = self._git_remote_name
         branch = get_current_branch()
-        subprocess.run(['git', 'fetch', remote_name], cwd=NOTO_DIR)
         result = subprocess.run(
             [
                 'git', 'diff', '--quiet', branch, f'{remote_name}/{branch}'  # noqa
@@ -64,6 +65,7 @@ class GitServerChecker(Checker):
 git_server_check = GitServerChecker(
     name='check',
     group=noto_git_server_group,
+    upstreams=[git_fetch],
     git_remote_name=NOTO_GIT_REMOTE_NAME,
 )
 runner.register(git_server_check)
