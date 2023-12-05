@@ -4,6 +4,7 @@ from .._group import noto_git_group
 from ..config import NOTO_GIT_REMOTE_NAME
 from ._helper import get_current_branch
 from .fetch import git_fetch
+from .commit import git_commit
 import os
 
 CURRENT_DIR = os.path.dirname(__file__)
@@ -20,7 +21,7 @@ def _git_pull_cmd(*args: Any, **kwargs: Any):
 git_pull = CmdTask(
     name='pull',
     group=noto_git_group,
-    upstreams=[git_fetch],
+    upstreams=[git_commit],
     cwd=NOTO_DIR,
     cmd=_git_pull_cmd
 )
