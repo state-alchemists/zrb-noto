@@ -14,10 +14,11 @@ NOTO_DIR = os.path.dirname(os.path.dirname(CURRENT_DIR))
 def _git_commit_cmd(*args: Any, **kwargs: Any):
     now = datetime.datetime.now().isoformat()
     remote_name = NOTO_GIT_REMOTE_NAME
-    branch = get_current_branch
+    branch = get_current_branch()
     message = f'{NOTO_MACHINE_NAME}: Update on {now}'
     return [
-        f'if git diff-index --quiet {remote_name}/{branch} --; then',
+        f'if git diff-index --quiet {remote_name}/{branch} --',
+        'then',
         '    echo "No changes to commit."',
         'else',
         '    git add .',
