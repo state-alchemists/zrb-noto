@@ -1,13 +1,8 @@
 # Noto
 
-Noto is a [Zrb](https://pypi.org/project/zrb/) project.
+A personal todo list based on Zrb and todo.txt
 
-There are two directories in the project:
 
-- `_automate`: This directory contains Zrb task definitions
-- `src`: This directory contains all source code and resources.
-
-To learn more about the project, you can visit [Zrb getting started page](https://github.com/state-alchemists/zrb/blob/main/docs/getting-started.md).
 
 # Prerequisites
 
@@ -34,33 +29,3 @@ To make sure that Zrb is accessible, you can try to invoke the following command
 ```bash
 zrb version
 ```
-
-# Creating an application
-
-You can add a new application to Noto by invoking the following command:
-
-```bash
-zrb project add fastapp
-```
-
-Once the application is created, you can start it by invoking the following command:
-
-```bash
-zrb project start-<app-name>
-```
-
-You will be able to find the application under Noto's `src` directory.
-
-Zrb also allows you to create CRUD entities on your application. Please visit [Zrb's development-to-deployment tutorial](https://github.com/state-alchemists/zrb/blob/main/docs/tutorials/development-to-deployment-low-code.md) to learn more.
-
-# Configuration
-
-To configure Noto, you need to create a `.env` file.
-
-You can see the default configuration by invoking the following command:
-
-```
-zrb project get-default-env
-```
-
-Once the environment file is updated, you can reload Noto by invoking `reload` in the terminal.

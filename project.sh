@@ -1,39 +1,39 @@
 #!/bin/bash
 
-PROJECT_DIR=$(pwd)
-echo "🤖 Set project directory to ${PROJECT_DIR}"
+NOTO_DIR=$(pwd)
+echo "🤖 Set project directory to ${NOTO_DIR}"
 
 
-if [ -z "$PROJECT_USE_VENV" ] || [ "$PROJECT_USE_VENV" = 1 ]
+if [ -z "$NOTO_USE_VENV" ] || [ "$NOTO_USE_VENV" = 1 ]
 then
     if [ ! -d .venv ]
     then
         echo '🤖 Create virtual environment'
-        python -m venv "${PROJECT_DIR}/.venv"
+        python -m venv "${NOTO_DIR}/.venv"
         echo '🤖 Activate virtual environment'
-        source "${PROJECT_DIR}/.venv/bin/activate"
+        source "${NOTO_DIR}/.venv/bin/activate"
     fi
 
     echo '🤖 Activate virtual environment'
-    source "${PROJECT_DIR}/.venv/bin/activate"
+    source "${NOTO_DIR}/.venv/bin/activate"
 fi
 
 reload() {
 
-    if [ ! -f "${PROJECT_DIR}/.env" ]
+    if [ ! -f "${NOTO_DIR}/.env" ]
     then
         echo '🤖 Create project configuration (.env)'
-        cp "${PROJECT_DIR}/template.env" "${PROJECT_DIR}/.env"
+        cp "${NOTO_DIR}/template.env" "${NOTO_DIR}/.env"
     fi
 
     echo '🤖 Load project configuration (.env)'
-    source "${PROJECT_DIR}/.env"
+    source "${NOTO_DIR}/.env"
 
-    if [ -z "$PROJECT_AUTO_INSTALL_PIP" ] || [ "$PROJECT_AUTO_INSTALL_PIP" = 1 ]
+    if [ -z "$NOTO_AUTO_INSTALL_PIP" ] || [ "$NOTO_AUTO_INSTALL_PIP" = 1 ]
     then
         echo '🤖 Install requirements'
         pip install --upgrade pip
-        pip install -r "${PROJECT_DIR}/requirements.txt"
+        pip install -r "${NOTO_DIR}/requirements.txt"
     fi
 
     _CURRENT_SHELL=$(ps -p $$ | awk 'NR==2 {print $4}')
