@@ -14,6 +14,7 @@ def _git_commit_cmd(*args: Any, **kwargs: Any):
     now = datetime.datetime.now().isoformat()
     message = f'{NOTO_MACHINE_NAME}: Update on {now}'
     return [
+        'set -e',
         f'git commit -m "{message}"'
     ]
 
