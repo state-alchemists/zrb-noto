@@ -4,6 +4,10 @@ from .._helper import get_current_branch
 from ...config import NOTO_GIT_REMOTE_NAME
 from ..._group import noto_git_local_group
 import subprocess
+import os
+
+CURRENT_DIR = os.path.dirname(__file__)
+NOTO_DIR = os.path.dirname(os.path.dirname(os.path.dirname(CURRENT_DIR)))
 
 
 class GitLocalChecker(Checker):
@@ -50,6 +54,7 @@ class GitLocalChecker(Checker):
             [
                 'git', 'diff-index', '--quiet', f'{remote_name}/{branch}'
             ],
+            cwd=NOTO_DIR,
             stderr=subprocess.STDOUT
         )
         if result.returncode == 1:
