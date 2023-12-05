@@ -4,7 +4,7 @@ A personal todo list based on [Zrb](https://github.com/state-alchemists/zrb) and
 
 # Features
 
-- Auto sync using git (planned)
+- Auto sync using git (on progress)
 - Using todo.txt format (planned)
 - Reminder (planned)
 - CLI commands to manage todo.txt (planned)
