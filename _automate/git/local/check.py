@@ -57,9 +57,9 @@ class GitLocalChecker(Checker):
         return False
 
 
-local_check = GitLocalChecker(
+git_local_check = GitLocalChecker(
     name='check',
     group=noto_git_local_group,
     git_remote_name=NOTO_GIT_REMOTE_NAME,
 )
-runner.register(local_check)
+runner.register(git_local_check)
