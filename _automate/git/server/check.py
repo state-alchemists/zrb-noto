@@ -50,16 +50,15 @@ class GitServerChecker(Checker):
         # Run the git diff command to compare local and remote branches
         remote_name = self._git_remote_name
         branch = get_current_branch()
+        subprocess.run(['git', 'fetch', remote_name], cwd=NOTO_DIR)
         result = subprocess.run(
             [
-                'git', 'diff-index', '--quiet', f'{remote_name}/{branch}'
+                'git', 'diff', '--quiet', branch, f'{remote_name}/{branch}'  # noqa
             ],
             cwd=NOTO_DIR,
             stderr=subprocess.STDOUT
         )
-        if result.returncode == 1:
-            return True
-        return False
+        return result.returncode == 1
 
 
 git_server_check = GitServerChecker(

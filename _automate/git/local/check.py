@@ -57,9 +57,7 @@ class GitLocalChecker(Checker):
             cwd=NOTO_DIR,
             stderr=subprocess.STDOUT
         )
-        if result.returncode == 1:
-            return True
-        return False
+        return result.returncode == 1
 
 
 git_local_check = GitLocalChecker(
