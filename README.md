@@ -1,6 +1,6 @@
 # Noto
 
-A personal todo list based on Zrb and todo.txt
+A personal todo list based on [Zrb](https://github.com/state-alchemists/zrb) and [todo.txt](https://github.com/todotxt/todo.txt)
 
 # Features
 
