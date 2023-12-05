@@ -28,6 +28,6 @@ git_commit = CmdTask(
     group=noto_git_group,
     upstreams=[git_fetch],
     cwd=NOTO_DIR,
-    cmd=_git_commit_cmd()
+    cmd=_git_commit_cmd
 )
 runner.register(git_commit)

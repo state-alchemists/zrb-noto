@@ -22,6 +22,6 @@ git_push = CmdTask(
     group=noto_git_group,
     upstreams=[git_commit],
     cwd=NOTO_DIR,
-    cmd=_git_push_cmd()
+    cmd=_git_push_cmd
 )
 runner.register(git_push)

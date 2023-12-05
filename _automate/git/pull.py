@@ -22,6 +22,6 @@ git_pull = CmdTask(
     group=noto_git_group,
     upstreams=[git_fetch],
     cwd=NOTO_DIR,
-    cmd=_git_pull_cmd()
+    cmd=_git_pull_cmd
 )
 runner.register(git_pull)
