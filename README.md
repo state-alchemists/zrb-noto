@@ -2,13 +2,19 @@
 
 A personal todo list based on Zrb and todo.txt
 
+# Features
+
+- Auto sync using git (planned)
+- Using todo.txt format (planned)
+- Reminder (planned)
+- CLI commands to manage todo.txt (planned)
 
 
 # Prerequisites
 
 To start working with Noto, you need to have:
 
-- Python 3.9 or higher
+- Python 3.10 or higher
 - Pip
 - Venv
 
