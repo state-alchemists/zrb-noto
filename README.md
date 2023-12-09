@@ -22,16 +22,18 @@ You can also use [Zrb Docker container](https://github.com/state-alchemists/zrb#
 
 # Getting started
 
-To get started, you need to activate Noto virtual environment and install a few packages (including Zrb). You can do this by invoking the following command in your terminal:
+To start working with Noto, you should activate the virtual environment and install a few packages (including Zrb). You can do this by invoking the following command in your terminal:
 
 ```bash
 source ./project.sh
 ```
 
-Once the virtual environment is activated, you will be able to invoke any Zrb commands.
-
-To make sure that Zrb is accessible, you can try to invoke the following commands:
+Once the virtual environment is activated, you can start the Noto monitoring system by invoking:
 
 ```bash
-zrb version
+zrb noto start
 ```
+
+# Writing custom flow
+
+To write custom flows, you can overwrite `_automate/main.py`.

@@ -3,7 +3,6 @@ from zrb import runner, CmdTask
 from .._group import noto_git_group
 from ..config import NOTO_GIT_REMOTE_NAME
 from ._helper import get_current_branch
-from .fetch import git_fetch
 from .commit import git_commit
 import os
 
