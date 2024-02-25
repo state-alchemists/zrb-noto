@@ -1,39 +1,67 @@
 #!/bin/bash
 
-NOTO_DIR=$(pwd)
-echo "🤖 Set project directory to ${NOTO_DIR}"
-
-
-if [ -z "$NOTO_USE_VENV" ] || [ "$NOTO_USE_VENV" = 1 ]
+if [ -n "$PREFIX" ] && [ "$PREFIX" = "/data/data/com.termux/files/usr" ]
 then
-    if [ ! -d .venv ]
-    then
-        echo '🤖 Create virtual environment'
-        python -m venv "${NOTO_DIR}/.venv"
-        echo '🤖 Activate virtual environment'
-        source "${NOTO_DIR}/.venv/bin/activate"
-    fi
-
-    echo '🤖 Activate virtual environment'
-    source "${NOTO_DIR}/.venv/bin/activate"
+    IS_TERMUX=1
+else
+    IS_TERMUX=0
 fi
+
+
+log_progress() {
+    echo -e "🤖 \e[0;33m${1}\e[0;0m"
+}
+
+
+command_exists() {
+    command -v "$1" &> /dev/null
+}
+
+
+init() {
+    export PROJECT_DIR=$(pwd)
+    log_progress "Setting project directory to ${PROJECT_DIR}"
+    if ! command_exists poetry
+    then
+        log_progress 'Install poetry'
+        pip install --upgrade pip setuptools
+        pip install "poetry"
+    fi
+    if [ ! -d "${PROJECT_DIR}/.venv" ]
+    then
+        log_progress 'Creating virtual environment'
+        python -m venv "${PROJECT_DIR}/.venv"
+    fi
+    log_progress 'Activating virtual environment'
+    source "${PROJECT_DIR}/.venv/bin/activate"
+}
+
 
 reload() {
 
-    if [ ! -f "${NOTO_DIR}/.env" ]
+    if [ ! -f "${PROJECT_DIR}/.env" ]
     then
-        echo '🤖 Create project configuration (.env)'
-        cp "${NOTO_DIR}/template.env" "${NOTO_DIR}/.env"
+        log_progress 'Creating project configuration (.env)'
+        cp "${PROJECT_DIR}/template.env" "${PROJECT_DIR}/.env"
     fi
 
-    echo '🤖 Load project configuration (.env)'
-    source "${NOTO_DIR}/.env"
+    log_progress 'Loading project configuration (.env)'
+    source "${PROJECT_DIR}/.env"
 
-    if [ -z "$NOTO_AUTO_INSTALL_PIP" ] || [ "$NOTO_AUTO_INSTALL_PIP" = 1 ]
+    if [ "$IS_TERMUX" = "1" ]
     then
-        echo '🤖 Install requirements'
-        pip install --upgrade pip
-        pip install -r "${NOTO_DIR}/requirements.txt"
+        log_progress 'Updating Build Flags'
+        _OLD_CFLAGS="$CFLAGS"
+        export CFLAGS="$_OLD_CFLAGS -Wno-incompatible-function-pointer-types" # ruamel.yaml need this.
+    fi
+
+    log_progress 'Install'
+    poetry install --no-root
+
+    if [ "$IS_TERMUX" = "1" ]
+    then
+        log_progress 'Restoring Build Flags'
+        export CFLAGS="$_OLD_CFLAGS"
     fi
 
     _CURRENT_SHELL=$(ps -p $$ | awk 'NR==2 {print $4}')
@@ -47,12 +75,14 @@ reload() {
     esac
     if [ "$_CURRENT_SHELL" = "zsh" ] || [ "$_CURRENT_SHELL" = "bash" ]
     then
-        echo "🤖 Set up shell completion for $_CURRENT_SHELL"
+        log_progress "Setting up shell completion for $_CURRENT_SHELL"
         eval "$(_ZRB_COMPLETE=${_CURRENT_SHELL}_source zrb)"
     else
-        echo "🤖 Cannot set up shell completion for $_CURRENT_SHELL"
+        log_progress "Cannot set up shell completion for $_CURRENT_SHELL"
     fi
 }
 
+init
 reload
-echo '🤖 Happy Coding :)'
+log_progress 'Happy Coding :)'
+
