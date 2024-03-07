@@ -1,3 +1,3 @@
 from zrb import Group
 
-LOG_GROUP = Group(name="log", description="log")
+TODO_GROUP = Group(name="todo", description="To do")
