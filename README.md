@@ -11,3 +11,12 @@ Noto is a personal management tool based on Zrb.
     ```bash
     zrb noto todo show
     ```
+
+# Trivia
+
+```python
+noto = {
+    "japanese": "note",
+    "javanese": "to arrange"
+}
+```
