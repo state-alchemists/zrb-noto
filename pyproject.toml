@@ -1,27 +1,23 @@
 [tool.poetry]
-name = "noto"
+name = ""
 version = "0.0.1"
-description = "Personal notes and management"
-authors = ["goFrendiAsgard <gofrendiasgard@gmail.com>"]
-license = "AGPL-3.0-or-later"
-readme = "README.md"
+description = "Just another Zrb project"
+authors = ["gofrendi <gofrendi@gmail.com>"]
+keywords = []
+packages = [
+  {include = "", from = ".."},
+]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0.0"
-zrb = ">=0.7.0"
-Markdown = "~3.5.1"
-pelican = "~4.9.1"
+python = ">=3.10.0,<4.0.0"
+zrb = ">=0.9.1"
 
 [tool.poetry.dev-dependencies]
-flake8 = "~6.0.0"
-black = "~23.12.1"
+flake8 = "~7.0.0"
+black = "~24.2.0"
 isort = "~5.13.2"
-tomli = "~2.0.1"
-pytest = "~7.4.0"
-pytest-cov = "~4.1.0"
-pytest-asyncio = "~0.21.0"
-flameprof = "~0.4"
 
+[tool.poetry.scripts]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
