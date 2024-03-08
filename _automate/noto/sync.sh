@@ -1,4 +1,5 @@
 set -e
+cd "${PROJECT_DIR}"
 if git diff --quiet && git diff --cached --quiet
 then
     echo "Nothing to commit"
