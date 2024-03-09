@@ -1,3 +1,7 @@
-from _automate.noto.todo import add, list_todo
+from _automate.noto.todo import add, complete, list_todo, start, stop
 
-assert add, list_todo
+assert add
+assert complete
+assert list_todo
+assert start
+assert stop

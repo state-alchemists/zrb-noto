@@ -3,7 +3,7 @@ from zrb.helper.python_task import show_lines
 
 from _automate.noto.todo._config import EXISTING_CONTEXT_STR, EXISTING_PROJECT_STR
 from _automate.noto.todo._group import TODO_GROUP
-from _automate.noto.todo._helper import get_items
+from _automate.noto.todo._helper import get_items, get_pretty_lines
 
 
 @python_task(
@@ -26,6 +26,7 @@ from _automate.noto.todo._helper import get_items
             default="",
         ),
     ],
+    retry=0,
 )
 def list_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
@@ -39,13 +40,12 @@ def list_todo(*args, **kwargs):
         projects = [project.strip() for project in project_str.split(",")]
     search = kwargs.get("search")
     items = get_items(contexts=contexts, projects=projects, search=search)
-    lines = [item.as_pretty_str() for item in items]
+    lines = get_pretty_lines(items)
     show_lines(
         task,
         f"Projects: {projects}",
         f"Contexts: {contexts}",
         f"Search:   {search}",
-        "      Completed  Created    Description",
         *lines,
     )
 

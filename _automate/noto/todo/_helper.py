@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from zrb.helper.accessories.color import colored
 
-from _automate.noto._config import TODO_FILE_NAME
+from _automate.noto._config import CURRENT_TIME, TODO_FILE_NAME
 
 
 class Item:
@@ -138,6 +138,7 @@ def get_items(
     contexts: List[str] = [],
     projects: List[str] = [],
     search: str = "",
+    completed: Optional[bool] = None,
     file_name: str = TODO_FILE_NAME,
 ) -> List[Item]:
     dir_path = Path(os.path.dirname(file_name))
@@ -154,13 +155,19 @@ def get_items(
         if not line:
             continue
         item = parse_item(line)
+        if completed is not None and item.completed != completed:
+            continue
         if filter_by_context and not _has_intersection(item.contexts, contexts):
             continue
         if filter_by_project and not _has_intersection(item.projects, projects):
             continue
-        if filter_by_keyword and not re.match(search, item.description, re.IGNORECASE):
+        if filter_by_keyword and not re.search(search, item.description, re.IGNORECASE):
             continue
         items.append(item)
+    return sort_items(items)
+
+
+def sort_items(items: List[Item]) -> List[Item]:
     return sorted(
         items,
         key=lambda item: (
@@ -170,6 +177,19 @@ def get_items(
             sorted(item.contexts),
         ),
     )
+
+
+def complete_item(item: Item, file_name: str = TODO_FILE_NAME):
+    items = get_items(file_name=file_name)
+    for index, existing_item in enumerate(items):
+        if item.description == existing_item.description:
+            items[index].completed = True
+            items[index].completion_date = CURRENT_TIME
+            break
+    items = sort_items(items)
+    with open(file_name, "w") as file:
+        file.write("\n".join([item.as_str() for item in items]))
+        file.write("\n")
 
 
 def get_existing_contexts() -> List[str]:
@@ -186,6 +206,13 @@ def get_existing_projects() -> List[str]:
     for item in items:
         existing_projects.update(item.projects)
     return sorted(list(existing_projects))
+
+
+def get_pretty_lines(items: List[Item]):
+    return [
+        "      Completed  Created    Description",
+        *[item.as_pretty_str() for item in items],
+    ]
 
 
 def _has_intersection(list1: List[str], list2: List[str]):

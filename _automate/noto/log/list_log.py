@@ -18,6 +18,7 @@ from _automate.noto.log._helper import get_log, get_log_file_name
             default=CURRENT_TIME.strftime("%Y-%m-%d"),
         ),
     ],
+    retry=0,
 )
 def list_log(*args, **kwargs):
     task: Task = kwargs.get("_task")
@@ -27,7 +28,6 @@ def list_log(*args, **kwargs):
     log_str = get_log(file_name)
     logs = log_str.split("\n")
     show_lines(task, *logs)
-    return log_str
 
 
 runner.register(list_log)

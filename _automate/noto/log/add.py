@@ -15,6 +15,7 @@ from _automate.noto.log._helper import append_log, get_log, get_log_file_name
             default="",
         ),
     ],
+    retry=0,
 )
 def add(*args, **kwargs):
     task: Task = kwargs.get("_task")

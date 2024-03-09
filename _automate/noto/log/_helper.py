@@ -20,7 +20,7 @@ def append_log(text: str, current_time: datetime = CURRENT_TIME) -> str:
     dir_path.mkdir(parents=True, exist_ok=True)
     time_str: str = current_time.strftime("%H:%M")
     with open(file_name, "a") as file:
-        file.write(f"- {time_str}: {text}")
+        file.write(f"- {time_str}: {text}\n")
 
 
 def get_log(file_name: str) -> str:

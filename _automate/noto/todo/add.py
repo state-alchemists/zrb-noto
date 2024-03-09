@@ -16,7 +16,7 @@ from _automate.noto.todo._helper import Item, append_item, get_items
         StrInput(
             name="date",
             prompt="Date (Y-m-d H:M)",
-            default=CURRENT_TIME.strftime("%Y-%m-%d %H:%M"),
+            default=CURRENT_TIME.strftime("%Y-%m-%d"),
         ),
         StrInput(
             name="description",
@@ -39,11 +39,12 @@ from _automate.noto.todo._helper import Item, append_item, get_items
             default="",
         ),
     ],
+    retry=0,
 )
 def add(*args, **kwargs):
     task: Task = kwargs.get("_task")
     date_str = kwargs.get("date")
-    creation_date = datetime.strptime(date_str, "%Y-%m-%d %H:%M")
+    creation_date = datetime.strptime(date_str, "%Y-%m-%d")
     description = kwargs.get("description")
     priority = kwargs.get("priority")
     if not priority:
