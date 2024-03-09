@@ -2,7 +2,7 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Mapping, Optional
 
 from zrb.helper.accessories.color import colored
 
@@ -13,20 +13,24 @@ class Item:
     def __init__(
         self,
         description: str,
+        old_description: Optional[str] = None,
         completed: bool = False,
         priority: Optional[str] = None,
         completion_date: Optional[datetime] = None,
         creation_date: Optional[datetime] = None,
         contexts: List[str] = [],
         projects: List[str] = [],
+        keyval: Mapping[str, str] = {},
     ):
         self.completed = completed
         self.priority = priority
         self.completion_date = completion_date
         self.creation_date = creation_date
         self.description = description
+        self.old_description = old_description
         self.contexts = contexts
         self.projects = projects
+        self.keyval = keyval
 
     def as_pretty_str(self) -> str:
         # complete
@@ -49,13 +53,22 @@ class Item:
             else self.creation_date.strftime("%Y-%m-%d")
         )
         creation_date_str = colored(creation_date_str, color="green")
-        # context
-        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
-        context_str = colored(context_str, color="blue")
         # project
         project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
-        project_str = colored(project_str, color="yellow")
-        return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {self.description} {project_str} {context_str}"  # noqa
+        if project_str != "":
+            project_str = f" {project_str}"
+            project_str = colored(project_str, color="yellow")
+        # context
+        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
+        if context_str != "":
+            context_str = f" {context_str}"
+            context_str = colored(context_str, color="blue")
+        # keyval
+        keyval_str = " ".join(f"{key}:{val}" for key, val in self.keyval.items())
+        if keyval_str != "":
+            keyval_str = f" {keyval_str}"
+            keyval_str = colored(keyval_str, color="magenta")
+        return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {self.description}{project_str}{context_str}{keyval_str}"  # noqa
 
     def as_str(self) -> str:
         # complete
@@ -74,11 +87,19 @@ class Item:
             if self.creation_date is None
             else self.creation_date.strftime("%Y-%m-%d") + " "
         )
-        # context
-        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
         # project
         project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
-        return f"{completed_str}{priority_str}{completion_date_str}{creation_date_str}{self.description} {project_str} {context_str}"  # noqa
+        if project_str != "":
+            project_str = f" {project_str}"
+        # context
+        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
+        if context_str != "":
+            context_str = f" {context_str}"
+        # keyval
+        keyval_str = " ".join(f"{key}:{val}" for key, val in self.keyval.items())
+        if keyval_str != "":
+            keyval_str = f" {keyval_str}"
+        return f"{completed_str}{priority_str}{completion_date_str}{creation_date_str}{self.description}{project_str}{context_str}{keyval_str}"  # noqa
 
 
 def parse_item(line: str) -> Item:
@@ -112,26 +133,35 @@ def parse_item(line: str) -> Item:
         creation_date = completion_date
         completion_date = None
     # Extract contexts and projects
-    contexts = [context.lstrip("@") for context in re.findall(r"@\w+", line)]
-    projects = [project.lstrip("+") for project in re.findall(r"\+\w+", line)]
-    # Remove contexts and projects from description
-    description = re.sub(r"(@\w+|\+\w+)", "", line).strip()  # noqa
+    contexts = [context.lstrip("@") for context in re.findall(r"@[\w\-]+", line)]
+    projects = [project.lstrip("+") for project in re.findall(r"\+[\w\-]+", line)]
+    keyval_match_list = re.findall(r"([\w\-]+):([\w\-]+)", line)
+    keyval = {}
+    for keyval_match in keyval_match_list:
+        keyval[keyval_match[0]] = keyval_match[1]
+    # Remove contexts, projects, and keyval from description
+    description = re.sub(
+        r"(@[\w\-]+|\+[\w\-]+|[\w\-]+:[\w\-]+)", "", line
+    ).strip()  # noqa
     return Item(
         description=description,
+        old_description=description,
         completed=completed,
         priority=priority,
         completion_date=completion_date,
         creation_date=creation_date,
         contexts=contexts,
         projects=projects,
+        keyval=keyval,
     )
 
 
 def append_item(item: Item, file_name: str = TODO_FILE_NAME) -> str:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
-    with open(file_name, "a") as file:
-        file.write(f"{item.as_str()}\n")
+    items = get_items(file_name=file_name)
+    items.append(item)
+    _write_items(items, file_name)
 
 
 def get_items(
@@ -166,32 +196,31 @@ def get_items(
         if filter_by_keyword and not re.search(search, item.description, re.IGNORECASE):
             continue
         items.append(item)
-    return sort_items(items)
-
-
-def sort_items(items: List[Item]) -> List[Item]:
-    return sorted(
-        items,
-        key=lambda item: (
-            item.completed,
-            item.priority,
-            sorted(item.projects),
-            sorted(item.contexts),
-        ),
-    )
+    return _sort_items(items)
 
 
 def complete_item(item: Item, file_name: str = TODO_FILE_NAME):
+    item.completed = True
+    item.completion_date = CURRENT_TIME
+    replace_item(item, file_name)
+
+
+def delete_item(item: Item, file_name: str = TODO_FILE_NAME):
+    items = [
+        old_item
+        for old_item in get_items(file_name=file_name)
+        if old_item.description != item.old_description
+    ]
+    _write_items(items, file_name)
+
+
+def replace_item(item: Item, file_name: str = TODO_FILE_NAME):
     items = get_items(file_name=file_name)
     for index, existing_item in enumerate(items):
-        if item.description == existing_item.description:
-            items[index].completed = True
-            items[index].completion_date = CURRENT_TIME
+        if item.old_description == existing_item.description:
+            items[index] = item
             break
-    items = sort_items(items)
-    with open(file_name, "w") as file:
-        file.write("\n".join([item.as_str() for item in items]))
-        file.write("\n")
+    _write_items(items, file_name)
 
 
 def get_existing_contexts(file_name: str = TODO_FILE_NAME) -> List[str]:
@@ -215,6 +244,35 @@ def get_pretty_item_lines(items: List[Item]):
         "      Completed  Created    Description",
         *[item.as_pretty_str() for item in items],
     ]
+
+
+def read_keyval_input(keyval_input: str) -> Mapping[str, str]:
+    keyval = {}
+    for keyval_str in keyval_input.split(","):
+        keyval_part = keyval_str.strip().split(":")
+        if len(keyval_part) < 2:
+            raise Exception(f"Invalid keyval: {keyval_str}")
+        keyval[keyval_part[0]] = keyval_part[1]
+    return keyval
+
+
+def _write_items(items: List[Item], file_name: str = TODO_FILE_NAME):
+    items = _sort_items(items)
+    with open(file_name, "w") as file:
+        file.write("\n".join([item.as_str() for item in items]))
+        file.write("\n")
+
+
+def _sort_items(items: List[Item]) -> List[Item]:
+    return sorted(
+        items,
+        key=lambda item: (
+            item.completed,
+            item.priority,
+            sorted(item.projects),
+            sorted(item.contexts),
+        ),
+    )
 
 
 def _has_intersection(list1: List[str], list2: List[str]):

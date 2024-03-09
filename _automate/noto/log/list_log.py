@@ -5,7 +5,7 @@ from zrb.helper.python_task import show_lines
 
 from _automate.noto._config import CURRENT_TIME
 from _automate.noto.log._group import LOG_GROUP
-from _automate.noto.log._helper import get_log_file_name, get_pretty_log_lines
+from _automate.noto.log._helper import get_log_file_name, get_log_lines
 
 
 @python_task(
@@ -25,7 +25,7 @@ def list_log(*args, **kwargs):
     date_str = kwargs.get("date")
     current_time = datetime.strptime(date_str, "%Y-%m-%d")
     file_name = get_log_file_name(current_time)
-    show_lines(task, *get_pretty_log_lines(file_name))
+    show_lines(task, *get_log_lines(file_name))
 
 
 runner.register(list_log)

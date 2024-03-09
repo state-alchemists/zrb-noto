@@ -2,13 +2,12 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
 
-from _automate.noto.log._helper import append_log, get_log_lines
 from _automate.noto.todo._group import TODO_GROUP
-from _automate.noto.todo._helper import complete_item, get_items, get_pretty_item_lines
+from _automate.noto.todo._helper import delete_item, get_items, get_pretty_item_lines
 
 
 @python_task(
-    name="complete",
+    name="delete",
     group=TODO_GROUP,
     inputs=[
         StrInput(
@@ -20,7 +19,7 @@ from _automate.noto.todo._helper import complete_item, get_items, get_pretty_ite
     ],
     retry=0,
 )
-def complete(*args, **kwargs):
+def delete(*args, **kwargs):
     task: Task = kwargs.get("_task")
     search = kwargs.get("task")
     items = get_items(search=search, completed=False)
@@ -41,9 +40,8 @@ def complete(*args, **kwargs):
         )
         return
     item = items[0]
-    complete_item(item)
-    append_log(f"__COMPLETE__ {item.description}")
-    show_lines(task, *get_log_lines(), *get_pretty_item_lines(get_items()))
+    delete_item(item)
+    show_lines(task, *get_pretty_item_lines(get_items()))
 
 
-runner.register(complete)
+runner.register(delete)

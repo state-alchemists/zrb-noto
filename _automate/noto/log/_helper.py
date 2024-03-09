@@ -20,8 +20,11 @@ def append_log(text: str, current_time: datetime = CURRENT_TIME) -> str:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
     time_str: str = current_time.strftime("%H:%M")
-    with open(file_name, "a") as file:
-        file.write(f"- {time_str}: {text}\n")
+    log_lines = get_log_lines(file_name)
+    log_lines.append(f"- {time_str}: {text}\n")
+    with open(file_name, "w") as file:
+        file.write("\n".join(log_lines))
+        file.write("\n")
 
 
 def get_log(file_name: Optional[str] = None) -> str:
@@ -32,10 +35,10 @@ def get_log(file_name: Optional[str] = None) -> str:
     if not os.path.isfile(file_name):
         return ""
     with open(file_name, "r") as file:
-        return file.read()
+        return file.read().strip()
 
 
-def get_pretty_log_lines(file_name: Optional[str] = None) -> List[str]:
+def get_log_lines(file_name: Optional[str] = None) -> List[str]:
     if file_name is None:
         file_name = get_log_file_name()
     log_str = get_log(file_name)

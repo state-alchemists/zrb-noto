@@ -3,11 +3,11 @@ from zrb.helper.python_task import show_lines
 
 from _automate.noto.todo._config import EXISTING_CONTEXT_STR, EXISTING_PROJECT_STR
 from _automate.noto.todo._group import TODO_GROUP
-from _automate.noto.todo._helper import get_pretty_item_lines
+from _automate.noto.todo._helper import get_items, get_pretty_item_lines
 
 
 @python_task(
-    name="list",
+    name="find",
     group=TODO_GROUP,
     inputs=[
         StrInput(
@@ -28,7 +28,7 @@ from _automate.noto.todo._helper import get_pretty_item_lines
     ],
     retry=0,
 )
-def list_todo(*args, **kwargs):
+def find(*args, **kwargs):
     task: Task = kwargs.get("_task")
     contexts = []
     context_str = kwargs.get("context")
@@ -44,8 +44,10 @@ def list_todo(*args, **kwargs):
         f"Projects: {projects}",
         f"Contexts: {contexts}",
         f"Search:   {search}",
-        *get_pretty_item_lines(contexts=contexts, projects=projects, search=search),
+        *get_pretty_item_lines(
+            get_items(contexts=contexts, projects=projects, search=search)
+        ),
     )
 
 
-runner.register(list_todo)
+runner.register(find)
