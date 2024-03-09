@@ -212,9 +212,7 @@ def get_kanban_lines(items: List[Item]) -> List[str]:
             attrs=STATUS_ATTRIBUTE_MAP[status],
         )
     # add header and separator
-    lines.append(separator)
-    lines.append(header)
-    lines.append(separator)
+    lines += [separator, header, separator]
     # add body
     index = 0
     while True:
