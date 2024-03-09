@@ -210,7 +210,7 @@ def get_existing_projects(file_name: str = TODO_FILE_NAME) -> List[str]:
     return sorted(list(existing_projects))
 
 
-def get_pretty_lines(items: List[Item]):
+def get_pretty_item_lines(items: List[Item]):
     return [
         "      Completed  Created    Description",
         *[item.as_pretty_str() for item in items],

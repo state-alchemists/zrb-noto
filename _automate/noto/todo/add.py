@@ -6,7 +6,12 @@ from zrb.helper.python_task import show_lines
 from _automate.noto._config import CURRENT_TIME
 from _automate.noto.todo._config import EXISTING_CONTEXT_STR, EXISTING_PROJECT_STR
 from _automate.noto.todo._group import TODO_GROUP
-from _automate.noto.todo._helper import Item, append_item, get_items
+from _automate.noto.todo._helper import (
+    Item,
+    append_item,
+    get_items,
+    get_pretty_item_lines,
+)
 
 
 @python_task(
@@ -65,9 +70,7 @@ def add(*args, **kwargs):
         projects=projects,
     )
     append_item(item=item)
-    items = get_items()
-    lines = [item.as_pretty_str() for item in items]
-    show_lines(task, *lines)
+    show_lines(task, *get_pretty_item_lines(get_items()))
 
 
 runner.register(add)
