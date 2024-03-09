@@ -14,11 +14,13 @@ def get_log_file_name(current_time: datetime = CURRENT_TIME) -> str:
     )
 
 
-def append_log(file_name: str, line: str) -> str:
+def append_log(text: str, current_time: datetime = CURRENT_TIME) -> str:
+    file_name = get_log_file_name(current_time=current_time)
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
+    time_str: str = current_time.strftime("%H:%M")
     with open(file_name, "a") as file:
-        file.write(line)
+        file.write(f"- {time_str}: {text}")
 
 
 def get_log(file_name: str) -> str:

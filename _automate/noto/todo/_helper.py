@@ -106,8 +106,11 @@ def append_item(item: Item, file_name: str = TODO_FILE_NAME) -> str:
 
 
 def get_items(
-    contexts: List[str] = [], projects: List[str] = [], file_name: str = TODO_FILE_NAME
-) -> str:
+    contexts: List[str] = [],
+    projects: List[str] = [],
+    keyword: str = "",
+    file_name: str = TODO_FILE_NAME,
+) -> List[Item]:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
     with open(file_name, "r") as file:
@@ -116,6 +119,7 @@ def get_items(
     items: List[Item] = []
     filter_by_context = len(contexts) > 0
     filter_by_project = len(projects) > 0
+    filter_by_keyword = keyword != ""
     for line in lines:
         line = line.strip()
         if not line:
@@ -124,6 +128,8 @@ def get_items(
         if filter_by_context and not _has_intersection(item.contexts, contexts):
             continue
         if filter_by_project and not _has_intersection(item.projects, projects):
+            continue
+        if filter_by_keyword and not re.match(keyword, item.description, re.IGNORECASE):
             continue
         items.append(item)
     return sorted(
@@ -135,6 +141,22 @@ def get_items(
             sorted(item.contexts),
         ),
     )
+
+
+def get_existing_contexts() -> List[str]:
+    existing_contexts = set()
+    items = get_items()
+    for item in items:
+        existing_contexts.update(item.contexts)
+    return sorted(list(existing_contexts))
+
+
+def get_existing_projects() -> List[str]:
+    existing_projects = set()
+    items = get_items()
+    for item in items:
+        existing_projects.update(item.projects)
+    return sorted(list(existing_projects))
 
 
 def _has_intersection(list1: List[str], list2: List[str]):

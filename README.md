@@ -1,6 +1,6 @@
 # Noto
 
-Noto is a personal management tool based on Zrb.
+Noto is a personal management tool based on [Zrb](https://pypi.org/project/zrb) and [todo.txt](https://github.com/todotxt/todo.txt).
 
 # How to use
 
@@ -9,7 +9,7 @@ Noto is a personal management tool based on Zrb.
 - Start working
 
     ```bash
-    zrb noto todo show
+    zrb todo list
     ```
 
 # Trivia

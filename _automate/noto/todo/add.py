@@ -4,6 +4,7 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.python_task import show_lines
 
 from _automate.noto._config import CURRENT_TIME
+from _automate.noto.todo._config import EXISTING_CONTEXT_STR, EXISTING_PROJECT_STR
 from _automate.noto.todo._group import TODO_GROUP
 from _automate.noto.todo._helper import Item, append_item, get_items
 
@@ -28,14 +29,14 @@ from _automate.noto.todo._helper import Item, append_item, get_items
             default="C",
         ),
         StrInput(
-            name="context",
-            prompt="Context, comma separated",
+            name="project",
+            prompt=f"Project, comma separated (e.g., {EXISTING_PROJECT_STR})",
             default="",
         ),
         StrInput(
-            name="project",
-            prompt="Project, comma separated",
-            default="personal",
+            name="context",
+            prompt=f"Context, comma separated (e.g., {EXISTING_CONTEXT_STR})",
+            default="",
         ),
     ],
 )
