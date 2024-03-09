@@ -143,6 +143,8 @@ def get_items(
 ) -> List[Item]:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
+    if not os.path.isfile(file_name):
+        return []
     with open(file_name, "r") as file:
         content = file.read()
     lines = content.split("\n")
@@ -192,17 +194,17 @@ def complete_item(item: Item, file_name: str = TODO_FILE_NAME):
         file.write("\n")
 
 
-def get_existing_contexts() -> List[str]:
+def get_existing_contexts(file_name: str = TODO_FILE_NAME) -> List[str]:
     existing_contexts = set()
-    items = get_items()
+    items = get_items(file_name=file_name)
     for item in items:
         existing_contexts.update(item.contexts)
     return sorted(list(existing_contexts))
 
 
-def get_existing_projects() -> List[str]:
+def get_existing_projects(file_name: str = TODO_FILE_NAME) -> List[str]:
     existing_projects = set()
-    items = get_items()
+    items = get_items(file_name=file_name)
     for item in items:
         existing_projects.update(item.projects)
     return sorted(list(existing_projects))

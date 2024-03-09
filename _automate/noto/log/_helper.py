@@ -26,5 +26,7 @@ def append_log(text: str, current_time: datetime = CURRENT_TIME) -> str:
 def get_log(file_name: str) -> str:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
+    if not os.path.isfile(file_name):
+        return ""
     with open(file_name, "r") as file:
         return file.read()
