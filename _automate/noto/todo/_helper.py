@@ -10,7 +10,6 @@ from _automate.noto._config import TODO_FILE_NAME
 from _automate.noto.todo._data import (
     STATUS_ATTRIBUTE_MAP,
     STATUS_COLOR_MAP,
-    STATUS_ICON_MAP,
     Item,
 )
 
