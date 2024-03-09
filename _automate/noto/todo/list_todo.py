@@ -31,8 +31,8 @@ def list_todo(*args, **kwargs):
     project_str = kwargs.get("project")
     if project_str:
         projects = [project.strip() for project in project_str.split(",")]
-    items = get_items()
-    lines = [item.as_str(show_empty=True, show_color=True) for item in items]
+    items = get_items(contexts=contexts, projects=projects)
+    lines = [item.as_pretty_str() for item in items]
     show_lines(task, f"Contexts: {contexts}", f"Projects: {projects}", *lines)
 
 

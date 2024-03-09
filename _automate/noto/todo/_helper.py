@@ -26,34 +26,41 @@ class Item:
         self.contexts = contexts
         self.projects = projects
 
-    def as_str(self, show_empty=False, show_color=False) -> str:
+    def as_pretty_str(self) -> str:
         # complete
-        empty_completed_str = " " if show_empty else ""
-        completed_str = "x" if self.completed else empty_completed_str
-        if show_color:
-            completed_str = colored(completed_str, color="cyan")
+        completed_str = "x" if self.completed else " "
+        completed_str = colored(completed_str, color="cyan")
         # priority
-        empty_priority_str = "( )" if show_empty else ""
-        priority_str = (
-            empty_priority_str if self.priority is None else f"({self.priority})"
-        )
-        if show_color:
-            priority_str = colored(priority_str, color="magenta")
+        priority_str = "( )" if self.priority is None else f"({self.priority})"
+        priority_str = colored(priority_str, color="magenta")
         # creation date
-        empty_creation_date_str = "                " if show_empty else ""
         creation_date_str = (
-            empty_creation_date_str
+            " " * 16
             if self.creation_date is None
             else self.creation_date.strftime("%Y-%m-%d %H:%M")
         )
-        if show_color:
-            creation_date_str = colored(creation_date_str, color="green")
-        context_str = " ".join([f"@{context}" for context in self.contexts])
-        if show_color:
-            context_str = colored(context_str, color="blue")
-        project_str = " ".join([f"+{project}" for project in self.projects])
-        if show_color:
-            project_str = colored(project_str, color="yellow")
+        creation_date_str = colored(creation_date_str, color="green")
+        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
+        context_str = colored(context_str, color="blue")
+        project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
+        project_str = colored(project_str, color="yellow")
+        return f"{completed_str} {priority_str} {creation_date_str} {self.description} {project_str} {context_str}"  # noqa
+
+    def as_str(self) -> str:
+        # complete
+        completed_str = "x" if self.completed else ""
+        # priority
+        priority_str = "" if self.priority is None else f"({self.priority})"
+        # creation date
+        creation_date_str = (
+            ""
+            if self.creation_date is None
+            else self.creation_date.strftime("%Y-%m-%d %H:%M")
+        )
+        # context
+        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
+        # project
+        project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
         return f"{completed_str} {priority_str} {creation_date_str} {self.description} {project_str} {context_str}"  # noqa
 
 
@@ -98,16 +105,39 @@ def append_item(item: Item, file_name: str = TODO_FILE_NAME) -> str:
         file.write(f"{item.as_str()}\n")
 
 
-def get_items(file_name: str = TODO_FILE_NAME) -> str:
+def get_items(
+    contexts: List[str] = [], projects: List[str] = [], file_name: str = TODO_FILE_NAME
+) -> str:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
     with open(file_name, "r") as file:
         content = file.read()
-        lines = content.split("\n")
-        items: List[Item] = []
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            items.append(parse_item(line))
-        return items
+    lines = content.split("\n")
+    items: List[Item] = []
+    filter_by_context = len(contexts) > 0
+    filter_by_project = len(projects) > 0
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        item = parse_item(line)
+        if filter_by_context and not _has_intersection(item.contexts, contexts):
+            continue
+        if filter_by_project and not _has_intersection(item.projects, projects):
+            continue
+        items.append(item)
+    return sorted(
+        items,
+        key=lambda item: (
+            item.completed,
+            item.priority,
+            sorted(item.projects),
+            sorted(item.contexts),
+        ),
+    )
+
+
+def _has_intersection(list1: List[str], list2: List[str]):
+    set1 = set(list1)
+    set2 = set(list2)
+    return not set1.isdisjoint(set2)

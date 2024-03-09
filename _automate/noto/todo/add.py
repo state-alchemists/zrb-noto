@@ -64,7 +64,7 @@ def add(*args, **kwargs):
     )
     append_item(item=item)
     items = get_items()
-    lines = [item.as_str(show_empty=True, show_color=True) for item in items]
+    lines = [item.as_pretty_str() for item in items]
     show_lines(task, *lines)
 
 
