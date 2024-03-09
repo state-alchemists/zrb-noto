@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
@@ -49,16 +47,6 @@ from _automate.noto.todo._helper import (
             prompt=f"New keyval, comma separated (e.g., due:{CURRENT_YEAR}-{CURRENT_MONTH}-{CURRENT_DAY},jira:1234)",  # noqa
             default="",
         ),
-        StrInput(
-            name="created",
-            prompt="Created at (Y-m-d)",
-            default="",
-        ),
-        StrInput(
-            name="completed",
-            prompt="Created at (Y-m-d)",
-            default="",
-        ),
     ],
     retry=0,
 )
@@ -99,14 +87,6 @@ def edit(*args, **kwargs):
             )
             return
         item.description = description
-    # creation_date
-    created_str = kwargs.get("created")
-    if created_str.strip() != "":
-        item.creation_date = datetime.strptime(created_str, "%Y-%m-%d")
-    # completion_date
-    completed_str = kwargs.get("completed")
-    if completed_str.strip() != "":
-        item.completion_date = datetime.strptime(completed_str, "%Y-%m-%d")
     # priority
     priority = kwargs.get("priority")
     if priority.strip() != "":
@@ -121,7 +101,7 @@ def edit(*args, **kwargs):
         item.projects = [project.strip() for project in project_str.split(",")]
     # keyval
     keyval_input = kwargs.get("keyval")
-    if keyval_input.strip != "":
+    if keyval_input.strip() != "":
         item.keyval = read_keyval_input(keyval_input)
     # save item
     replace_item(item)

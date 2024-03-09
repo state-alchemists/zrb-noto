@@ -43,7 +43,7 @@ def complete(*args, **kwargs):
     item = items[0]
     complete_item(item)
     append_log(f"__COMPLETE__ {item.description}")
-    show_lines(task, *get_log_lines(), *get_pretty_item_lines(get_items()))
+    show_lines(task, *get_log_lines(), "", *get_pretty_item_lines(get_items()))
 
 
 runner.register(complete)

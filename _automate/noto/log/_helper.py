@@ -1,9 +1,18 @@
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
+from zrb.helper.accessories.color import colored
+
 from _automate.noto._config import CURRENT_TIME, SRC_DIR
+
+_STATUS_COLOR_MAP = {
+    "START": "cyan",
+    "COMPLETE": "green",
+    "STOP": "yellow",
+}
 
 
 def get_log_file_name(current_time: datetime = CURRENT_TIME) -> str:
@@ -42,4 +51,13 @@ def get_log_lines(file_name: Optional[str] = None) -> List[str]:
     if file_name is None:
         file_name = get_log_file_name()
     log_str = get_log(file_name)
+    for keyword, color in _STATUS_COLOR_MAP.items():
+        log_str = re.sub(
+            re.compile("([\n]*- \\d{2}:\\d{2}): __" + keyword + "__"),
+            lambda match: match.group(1) + ": " + colored(keyword, color=color),
+            log_str,
+        )
+    log_str = re.sub(
+        r"__(.*?)__", lambda match: colored(match.group(1), color="yellow"), log_str
+    )
     return log_str.split("\n")

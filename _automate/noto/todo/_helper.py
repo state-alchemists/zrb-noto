@@ -4,102 +4,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Mapping, Optional
 
-from zrb.helper.accessories.color import colored
-
-from _automate.noto._config import CURRENT_TIME, TODO_FILE_NAME
-
-
-class Item:
-    def __init__(
-        self,
-        description: str,
-        old_description: Optional[str] = None,
-        completed: bool = False,
-        priority: Optional[str] = None,
-        completion_date: Optional[datetime] = None,
-        creation_date: Optional[datetime] = None,
-        contexts: List[str] = [],
-        projects: List[str] = [],
-        keyval: Mapping[str, str] = {},
-    ):
-        self.completed = completed
-        self.priority = priority
-        self.completion_date = completion_date
-        self.creation_date = creation_date
-        self.description = description
-        self.old_description = old_description
-        self.contexts = contexts
-        self.projects = projects
-        self.keyval = keyval
-
-    def as_pretty_str(self) -> str:
-        # complete
-        completed_str = "x" if self.completed else " "
-        completed_str = colored(completed_str, color="cyan")
-        # priority
-        priority_str = "( )" if self.priority is None else f"({self.priority})"
-        priority_str = colored(priority_str, color="magenta")
-        # completion date
-        completion_date_str = (
-            " " * 10
-            if self.completion_date is None
-            else self.completion_date.strftime("%Y-%m-%d")
-        )
-        completion_date_str = colored(completion_date_str, color="yellow")
-        # creation date
-        creation_date_str = (
-            " " * 10
-            if self.creation_date is None
-            else self.creation_date.strftime("%Y-%m-%d")
-        )
-        creation_date_str = colored(creation_date_str, color="green")
-        # project
-        project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
-        if project_str != "":
-            project_str = f" {project_str}"
-            project_str = colored(project_str, color="yellow")
-        # context
-        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
-        if context_str != "":
-            context_str = f" {context_str}"
-            context_str = colored(context_str, color="blue")
-        # keyval
-        keyval_str = " ".join(f"{key}:{val}" for key, val in self.keyval.items())
-        if keyval_str != "":
-            keyval_str = f" {keyval_str}"
-            keyval_str = colored(keyval_str, color="magenta")
-        return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {self.description}{project_str}{context_str}{keyval_str}"  # noqa
-
-    def as_str(self) -> str:
-        # complete
-        completed_str = "x " if self.completed else ""
-        # priority
-        priority_str = "" if self.priority is None else f"({self.priority}) "
-        # completion date
-        completion_date_str = (
-            ""
-            if self.completion_date is None
-            else self.completion_date.strftime("%Y-%m-%d") + " "
-        )
-        # creation date
-        creation_date_str = (
-            ""
-            if self.creation_date is None
-            else self.creation_date.strftime("%Y-%m-%d") + " "
-        )
-        # project
-        project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
-        if project_str != "":
-            project_str = f" {project_str}"
-        # context
-        context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
-        if context_str != "":
-            context_str = f" {context_str}"
-        # keyval
-        keyval_str = " ".join(f"{key}:{val}" for key, val in self.keyval.items())
-        if keyval_str != "":
-            keyval_str = f" {keyval_str}"
-        return f"{completed_str}{priority_str}{completion_date_str}{creation_date_str}{self.description}{project_str}{context_str}{keyval_str}"  # noqa
+from _automate.noto._config import TODO_FILE_NAME
+from _automate.noto.todo._data import Item
 
 
 def parse_item(line: str) -> Item:
@@ -199,9 +105,18 @@ def get_items(
     return _sort_items(items)
 
 
+def stop_item(item: Item, file_name: str = TODO_FILE_NAME):
+    item.stop()
+    replace_item(item, file_name)
+
+
+def start_item(item: Item, file_name: str = TODO_FILE_NAME):
+    item.start()
+    replace_item(item, file_name)
+
+
 def complete_item(item: Item, file_name: str = TODO_FILE_NAME):
-    item.completed = True
-    item.completion_date = CURRENT_TIME
+    item.complete()
     replace_item(item, file_name)
 
 

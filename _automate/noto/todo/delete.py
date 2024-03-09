@@ -22,19 +22,19 @@ from _automate.noto.todo._helper import delete_item, get_items, get_pretty_item_
 def delete(*args, **kwargs):
     task: Task = kwargs.get("_task")
     search = kwargs.get("task")
-    items = get_items(search=search, completed=False)
+    items = get_items(search=search)
     if len(items) == 0:
         show_lines(
             task,
-            colored("⚠️  NOT COMPLETED: Task not found", color="light_red"),
+            colored("⚠️  NOT DELETED: Task not found", color="light_red"),
             "List of available tasks:",
-            *get_pretty_item_lines(get_items(completed=False)),
+            *get_pretty_item_lines(get_items()),
         )
         return
     if len(items) > 1:
         show_lines(
             task,
-            colored("⚠️  NOT COMPLETED: Multiple task found", color="light_red"),
+            colored("⚠️  NOT DELETED: Multiple task found", color="light_red"),
             "List of matched tasks:",
             *get_pretty_item_lines(items),
         )

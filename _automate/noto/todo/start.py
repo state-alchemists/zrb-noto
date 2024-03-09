@@ -4,7 +4,7 @@ from zrb.helper.python_task import show_lines
 
 from _automate.noto.log._helper import append_log, get_log_lines
 from _automate.noto.todo._group import TODO_GROUP
-from _automate.noto.todo._helper import get_items, get_pretty_item_lines
+from _automate.noto.todo._helper import get_items, get_pretty_item_lines, start_item
 
 
 @python_task(
@@ -41,8 +41,9 @@ def start(*args, **kwargs):
         )
         return
     item = items[0]
+    start_item(item)
     append_log(f"__START__ {item.description}")
-    show_lines(task, *get_log_lines())
+    show_lines(task, *get_log_lines(), "", *get_pretty_item_lines(get_items()))
 
 
 runner.register(start)

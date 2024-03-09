@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
@@ -11,9 +9,9 @@ from _automate.noto._config import (
     CURRENT_YEAR,
 )
 from _automate.noto.todo._config import EXISTING_CONTEXT_STR, EXISTING_PROJECT_STR
+from _automate.noto.todo._data import Item
 from _automate.noto.todo._group import TODO_GROUP
 from _automate.noto.todo._helper import (
-    Item,
     append_item,
     get_items,
     get_pretty_item_lines,
@@ -50,11 +48,6 @@ from _automate.noto.todo._helper import (
             prompt=f"Keyval, comma separated (e.g., due:{CURRENT_YEAR}-{CURRENT_MONTH}-{CURRENT_DAY},jira:1234)",  # noqa
             default="",
         ),
-        StrInput(
-            name="created",
-            prompt="Created at (Y-m-d)",
-            default=CURRENT_TIME.strftime("%Y-%m-%d"),
-        ),
     ],
     retry=0,
 )
@@ -73,14 +66,10 @@ def add(*args, **kwargs):
             ),
         )
         return
-    # creation_date
-    created_str = kwargs.get("created")
-    if created_str.strip() != "":
-        creation_date = datetime.strptime(created_str, "%Y-%m-%d")
     # priority
     priority = kwargs.get("priority")
-    if priority.strip() != "":
-        priority = None
+    if priority.strip() == "":
+        priority = "C"
     # contexts
     contexts = []
     context_str = kwargs.get("context")
@@ -96,10 +85,11 @@ def add(*args, **kwargs):
     keyval_input = kwargs.get("keyval")
     if keyval_input.strip() != "":
         keyval = read_keyval_input(keyval_input)
+    keyval["createdAt"] = round(CURRENT_TIME.timestamp())
     item = Item(
         description=description,
         priority=priority,
-        creation_date=creation_date,
+        creation_date=CURRENT_TIME,
         contexts=contexts,
         projects=projects,
         keyval=keyval,
