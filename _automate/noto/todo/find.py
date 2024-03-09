@@ -11,6 +11,11 @@ from _automate.noto.todo._helper import get_items, get_pretty_item_lines
     group=TODO_GROUP,
     inputs=[
         StrInput(
+            name="search",
+            prompt="Search pattern (regex)",
+            default="",
+        ),
+        StrInput(
             name="project",
             prompt=f"Project, comma separated (e.g., {EXISTING_PROJECT_STR})",
             default="",
@@ -18,11 +23,6 @@ from _automate.noto.todo._helper import get_items, get_pretty_item_lines
         StrInput(
             name="context",
             prompt=f"Context, comma separated (e.g., {EXISTING_CONTEXT_STR})",
-            default="",
-        ),
-        StrInput(
-            name="search",
-            prompt="Search pattern (regex)",
             default="",
         ),
     ],

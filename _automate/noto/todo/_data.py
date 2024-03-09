@@ -114,15 +114,15 @@ class Item:
         if keyval_str != "":
             keyval_str = colored(f" {keyval_str}", color="magenta")
         # description
-        description_str = self._get_description_str()
+        description_str = self._get_colored_description()
         # Status string
         status_icon = self._get_status_icon()
         # work duration
-        work_duration_str = self._get_work_duration_str()
+        work_duration_str = self.get_work_duration_str()
         if work_duration_str != "":
             work_duration_str = colored(f" (⚙️  {work_duration_str})", color="cyan")
         # duration
-        duration_str = self._get_duration_str()
+        duration_str = self.get_duration_str()
         if duration_str != "":
             duration_str = colored(f" (🌱 {duration_str})", color="green")
         return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {status_icon} {description_str}{project_str}{context_str}{keyval_str}{duration_str}{work_duration_str}"  # noqa
@@ -142,7 +142,7 @@ class Item:
             ]
         }
 
-    def _get_description_str(self):
+    def _get_colored_description(self):
         status = self.get_status()
         description_str = self.description
         return colored(
@@ -164,7 +164,7 @@ class Item:
             status = "NEW"
         return status
 
-    def _get_work_duration_str(self):
+    def get_work_duration_str(self):
         status = self.keyval.get("status", "new").upper()
         # get working duration
         work_duration = int(self.keyval.get("workDuration", "0"))
@@ -176,7 +176,7 @@ class Item:
             return ""
         return self._seconds_to_human_time(work_duration)
 
-    def _get_duration_str(self):
+    def get_duration_str(self):
         created_at = int(self.keyval.get("createdAt", "-1"))
         if created_at == -1 and self.creation_date is not None:
             created_at = self.creation_date.timestamp()

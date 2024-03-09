@@ -7,11 +7,7 @@ from typing import List, Mapping, Optional
 from zrb.helper.accessories.color import colored
 
 from _automate.noto._config import TODO_FILE_NAME
-from _automate.noto.todo._data import (
-    STATUS_ATTRIBUTE_MAP,
-    STATUS_COLOR_MAP,
-    Item,
-)
+from _automate.noto.todo._data import STATUS_ATTRIBUTE_MAP, STATUS_COLOR_MAP, Item
 
 
 def parse_item(line: str) -> Item:
@@ -172,10 +168,36 @@ def get_kanban_lines(items: List[Item]) -> List[str]:
     status_max_length: Mapping[str][int] = {}
     status_list = ("NEW", "STOPPED", "STARTED", "COMPLETED")
     for status in status_list:
-        status_lines[status] = [
-            item.description for item in items if item.get_status() == status
-        ]
-        status_max_length[status] = max(len(s) for s in status_lines[status])
+        status_lines[status] = []
+        for item in items:
+            if item.get_status() != status:
+                continue
+            status_lines[status].append(f"* {item.description}")
+            project_str = " ".join(f"+{project}" for project in sorted(item.projects))
+            context_str = " ".join(f"@{context}" for context in sorted(item.contexts))
+            work_duration = item.get_work_duration_str()
+            duration = item.get_duration_str()
+            if (
+                project_str != ""
+                or context_str != ""
+                or work_duration != ""
+                or duration != ""
+            ):
+                status_lines[status].append("")
+            if project_str != "":
+                status_lines[status].append(f"  {project_str}")
+            if context_str != "":
+                status_lines[status].append(f"  {context_str}")
+            if work_duration != "":
+                status_lines[status].append(f"  Work: {work_duration}")
+            if duration != "":
+                status_lines[status].append(f"  Age: {duration}")
+            status_lines[status].append("")
+        status_max_length[status] = (
+            max(len(s) for s in status_lines[status])
+            if len(status_lines[status]) > 0
+            else len(status)
+        )
     lines = []
     # separator
     max_length = sum([status_max_length[status] + 3 for status in status_list])
