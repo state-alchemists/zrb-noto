@@ -15,12 +15,14 @@ class Item:
         description: str,
         completed: bool = False,
         priority: Optional[str] = None,
+        completion_date: Optional[datetime] = None,
         creation_date: Optional[datetime] = None,
         contexts: List[str] = [],
         projects: List[str] = [],
     ):
         self.completed = completed
         self.priority = priority
+        self.completion_date = completion_date
         self.creation_date = creation_date
         self.description = description
         self.contexts = contexts
@@ -33,35 +35,50 @@ class Item:
         # priority
         priority_str = "( )" if self.priority is None else f"({self.priority})"
         priority_str = colored(priority_str, color="magenta")
+        # completion date
+        completion_date_str = (
+            " " * 10
+            if self.completion_date is None
+            else self.completion_date.strftime("%Y-%m-%d")
+        )
+        completion_date_str = colored(completion_date_str, color="yellow")
         # creation date
         creation_date_str = (
-            " " * 16
+            " " * 10
             if self.creation_date is None
-            else self.creation_date.strftime("%Y-%m-%d %H:%M")
+            else self.creation_date.strftime("%Y-%m-%d")
         )
         creation_date_str = colored(creation_date_str, color="green")
+        # context
         context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
         context_str = colored(context_str, color="blue")
+        # project
         project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
         project_str = colored(project_str, color="yellow")
-        return f"{completed_str} {priority_str} {creation_date_str} {self.description} {project_str} {context_str}"  # noqa
+        return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {self.description} {project_str} {context_str}"  # noqa
 
     def as_str(self) -> str:
         # complete
-        completed_str = "x" if self.completed else ""
+        completed_str = "x " if self.completed else ""
         # priority
-        priority_str = "" if self.priority is None else f"({self.priority})"
+        priority_str = "" if self.priority is None else f"({self.priority}) "
+        # completion date
+        completion_date_str = (
+            ""
+            if self.completion_date is None
+            else self.completion_date.strftime("%Y-%m-%d") + " "
+        )
         # creation date
         creation_date_str = (
             ""
             if self.creation_date is None
-            else self.creation_date.strftime("%Y-%m-%d %H:%M")
+            else self.creation_date.strftime("%Y-%m-%d") + " "
         )
         # context
         context_str = " ".join([f"@{context}" for context in sorted(self.contexts)])
         # project
         project_str = " ".join([f"+{project}" for project in sorted(self.projects)])
-        return f"{completed_str} {priority_str} {creation_date_str} {self.description} {project_str} {context_str}"  # noqa
+        return f"{completed_str}{priority_str}{completion_date_str}{creation_date_str}{self.description} {project_str} {context_str}"  # noqa
 
 
 def parse_item(line: str) -> Item:
@@ -75,14 +92,25 @@ def parse_item(line: str) -> Item:
     priority = None
     if priority_match:
         priority, line = (priority_match.group(1), line[len(priority_match.group(0)) :])
+    # Check for completion date
+    date_match = re.match(r"(\d{4}-\d{2}-\d{2}) ", line)
+    completion_date = None
+    if date_match:
+        completion_date, line = (
+            datetime.strptime(date_match.group(1), "%Y-%m-%d"),
+            line[len(date_match.group(0)) :],
+        )
     # Check for creation date
-    date_match = re.match(r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}) ", line)
+    date_match = re.match(r"(\d{4}-\d{2}-\d{2}) ", line)
     creation_date = None
     if date_match:
         creation_date, line = (
-            datetime.strptime(date_match.group(1), "%Y-%m-%d %H:%M"),
+            datetime.strptime(date_match.group(1), "%Y-%m-%d"),
             line[len(date_match.group(0)) :],
         )
+    elif completion_date is not None:
+        creation_date = completion_date
+        completion_date = None
     # Extract contexts and projects
     contexts = [context.lstrip("@") for context in re.findall(r"@\w+", line)]
     projects = [project.lstrip("+") for project in re.findall(r"\+\w+", line)]
@@ -92,6 +120,7 @@ def parse_item(line: str) -> Item:
         description=description,
         completed=completed,
         priority=priority,
+        completion_date=completion_date,
         creation_date=creation_date,
         contexts=contexts,
         projects=projects,
@@ -108,7 +137,7 @@ def append_item(item: Item, file_name: str = TODO_FILE_NAME) -> str:
 def get_items(
     contexts: List[str] = [],
     projects: List[str] = [],
-    keyword: str = "",
+    search: str = "",
     file_name: str = TODO_FILE_NAME,
 ) -> List[Item]:
     dir_path = Path(os.path.dirname(file_name))
@@ -119,7 +148,7 @@ def get_items(
     items: List[Item] = []
     filter_by_context = len(contexts) > 0
     filter_by_project = len(projects) > 0
-    filter_by_keyword = keyword != ""
+    filter_by_keyword = search != ""
     for line in lines:
         line = line.strip()
         if not line:
@@ -129,7 +158,7 @@ def get_items(
             continue
         if filter_by_project and not _has_intersection(item.projects, projects):
             continue
-        if filter_by_keyword and not re.match(keyword, item.description, re.IGNORECASE):
+        if filter_by_keyword and not re.match(search, item.description, re.IGNORECASE):
             continue
         items.append(item)
     return sorted(
