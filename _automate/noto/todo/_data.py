@@ -5,21 +5,21 @@ from zrb.helper.accessories.color import colored
 
 from _automate.noto._config import CURRENT_TIME
 
-_STATUS_COLOR_MAP = {
+STATUS_ICON_MAP = {
     "NEW": "✨",
     "STARTED": "🏃",
     "STOPPED": "🌴",
     "COMPLETED": "🏆",
 }
 
-_DESCRIPTION_COLOR_MAP = {
+STATUS_COLOR_MAP = {
     "NEW": "white",
     "STARTED": "light_cyan",
     "STOPPED": "light_red",
     "COMPLETED": "light_green",
 }
 
-_DESCRIPTION_ATTRIBUTE_MAP = {
+STATUS_ATTRIBUTE_MAP = {
     "NEW": [],
     "STARTED": ["bold"],
     "STOPPED": ["bold"],
@@ -71,7 +71,7 @@ class Item:
 
     def _stop(self):
         timestamp = round(CURRENT_TIME.timestamp())
-        if self._get_upper_status() != "STARTED":
+        if self.get_status() != "STARTED":
             return
         self.keyval["lastStoppedAt"] = timestamp
         last_started_at = int(self.keyval.get("lastStartedAt", str(timestamp)))
@@ -143,24 +143,24 @@ class Item:
         }
 
     def _get_description_str(self):
-        status = self._get_upper_status()
+        status = self.get_status()
         description_str = self.description
         return colored(
             description_str,
-            color=_DESCRIPTION_COLOR_MAP.get(status),
-            attrs=_DESCRIPTION_ATTRIBUTE_MAP.get(status),
+            color=STATUS_COLOR_MAP.get(status),
+            attrs=STATUS_ATTRIBUTE_MAP.get(status),
         )
 
     def _get_status_icon(self):
-        status = self._get_upper_status()
-        status_str = _STATUS_COLOR_MAP.get(status)
+        status = self.get_status()
+        status_str = STATUS_ICON_MAP.get(status)
         return status_str
 
-    def _get_upper_status(self):
+    def get_status(self):
         if self.completed:
             return "COMPLETED"
         status = self.keyval.get("status", "new").upper()
-        if status not in _STATUS_COLOR_MAP:
+        if status not in STATUS_ICON_MAP:
             status = "NEW"
         return status
 

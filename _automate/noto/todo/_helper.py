@@ -4,8 +4,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Mapping, Optional
 
+from zrb.helper.accessories.color import colored
+
 from _automate.noto._config import TODO_FILE_NAME
-from _automate.noto.todo._data import Item
+from _automate.noto.todo._data import (
+    STATUS_ATTRIBUTE_MAP,
+    STATUS_COLOR_MAP,
+    STATUS_ICON_MAP,
+    Item,
+)
 
 
 def parse_item(line: str) -> Item:
@@ -154,11 +161,60 @@ def get_existing_projects(file_name: str = TODO_FILE_NAME) -> List[str]:
     return sorted(list(existing_projects))
 
 
-def get_pretty_item_lines(items: List[Item]):
+def get_pretty_item_lines(items: List[Item]) -> List[str]:
     return [
         "      Completed  Created    Description",
         *[item.as_pretty_str() for item in items],
     ]
+
+
+def get_kanban_lines(items: List[Item]) -> List[str]:
+    status_lines: Mapping[str][List[str]] = {}
+    status_max_length: Mapping[str][int] = {}
+    status_list = ("NEW", "STOPPED", "STARTED", "COMPLETED")
+    for status in status_list:
+        status_lines[status] = [
+            item.description for item in items if item.get_status() == status
+        ]
+        status_max_length[status] = max(len(s) for s in status_lines[status])
+    lines = []
+    # separator
+    max_length = sum([status_max_length[status] + 3 for status in status_list])
+    separator = "-" * max_length
+    # header
+    header = ""
+    for status in status_list:
+        caption = status.ljust(status_max_length[status] + 3)
+        header += colored(
+            caption,
+            color=STATUS_COLOR_MAP[status],
+            attrs=STATUS_ATTRIBUTE_MAP[status],
+        )
+    # add header and separator
+    lines.append(separator)
+    lines.append(header)
+    lines.append(separator)
+    # add body
+    index = 0
+    while True:
+        # check stopping condition
+        should_stop = True
+        for status in status_list:
+            if index < len(status_lines[status]):
+                should_stop = False
+        if should_stop:
+            break
+        combined_line = ""
+        for status in status_list:
+            line_size = len(status_lines[status])
+            line = status_lines[status][index] if index < line_size else ""
+            line = line.ljust(status_max_length[status] + 3)
+            line = colored(line, color=STATUS_COLOR_MAP[status])
+            combined_line += line.ljust(status_max_length[status] + 3)
+        lines.append(combined_line)
+        index += 1
+    lines.append(separator)
+    return lines
 
 
 def read_keyval_input(keyval_input: str) -> Mapping[str, str]:
