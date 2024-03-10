@@ -1,3 +1,3 @@
-from _automate import noto
+from _daily import noto
 
 assert noto
