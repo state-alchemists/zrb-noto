@@ -3,14 +3,18 @@ from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
 
 from _daily.noto._config import CURRENT_DAY, CURRENT_MONTH, CURRENT_YEAR
-from _daily.noto.todo._config import EXISTING_CONTEXT_STR, EXISTING_PROJECT_STR
 from _daily.noto.todo._group import TODO_GROUP
 from _daily.noto.todo._helper import (
+    get_existing_contexts,
+    get_existing_projects,
     get_items,
     get_pretty_item_lines,
     read_keyval_input,
     replace_item,
 )
+
+_EXISTING_CONTEXT_STR = ",".join(get_existing_contexts())
+_EXISTING_PROJECT_STR = ",".join(get_existing_projects())
 
 
 @python_task(
@@ -34,12 +38,12 @@ from _daily.noto.todo._helper import (
         ),
         StrInput(
             name="project",
-            prompt=f"New project, comma separated (e.g., {EXISTING_PROJECT_STR})",
+            prompt=f"New project, comma separated (e.g., {_EXISTING_PROJECT_STR})",
             default="",
         ),
         StrInput(
             name="context",
-            prompt=f"New context, comma separated (e.g., {EXISTING_CONTEXT_STR})",
+            prompt=f"New context, comma separated (e.g., {_EXISTING_CONTEXT_STR})",
             default="",
         ),
         StrInput(

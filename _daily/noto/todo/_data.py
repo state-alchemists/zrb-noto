@@ -4,6 +4,9 @@ from typing import List, Mapping, Optional
 from zrb.helper.accessories.color import colored
 
 from _daily.noto._config import CURRENT_TIME
+from _daily.noto._helper import get_screen_width
+
+SCREEN_WIDTH = get_screen_width()
 
 STATUS_ICON_MAP = {
     "NEW": "✨",
@@ -78,7 +81,7 @@ class Item:
         previous_duration = int(self.keyval.get("workDuration", "0"))
         self.keyval["workDuration"] = previous_duration + (timestamp - last_started_at)
 
-    def as_pretty_str(self) -> str:
+    def as_pretty_str(self, screen_width: int = SCREEN_WIDTH) -> str:
         # complete
         completed_str = "x" if self.completed else " "
         completed_str = colored(completed_str, color="cyan")
@@ -125,6 +128,10 @@ class Item:
         duration_str = self.get_duration_str()
         if duration_str != "":
             duration_str = colored(f" (🌱 {duration_str})", color="green")
+        # small screen
+        if screen_width <= 80:
+            return f"{completed_str} {priority_str} {status_icon} {description_str}{project_str}{context_str}{keyval_str}{duration_str}{work_duration_str}"  # noqa
+        # normal screen
         return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {status_icon} {description_str}{project_str}{context_str}{keyval_str}{duration_str}{work_duration_str}"  # noqa
 
     def _get_published_keyval(self):
@@ -196,16 +203,16 @@ class Item:
         seconds %= 3600
         minutes = seconds // 60
         if years > 0:
-            return f"{years} years {months} months {days} days"
+            return f"{years}y {months}m {days}d"
         if months > 0:
-            return f"{months} months {days} days {hours} hours"
+            return f"{months}m {days}d {hours}h"
         if days > 0:
-            return f"{days} days {hours} hours"
+            return f"{days}d {hours}h"
         if hours > 0:
-            return f"{hours} hours {minutes} minutes"
+            return f"{hours}h {minutes} min"
         if minutes == 0:
             return ""
-        return f"{minutes} minutes"
+        return f"{minutes} min"
 
     def as_str(self) -> str:
         # complete

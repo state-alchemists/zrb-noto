@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 
 from zrb import Task
@@ -30,3 +31,8 @@ def run_cmd(task: Task, command: str) -> int:
     if rc != 0:
         raise Exception(f"Non zero exit code: {rc}")
     return rc
+
+
+def get_screen_width() -> int:
+    terminal_size = shutil.get_terminal_size()
+    return terminal_size.columns

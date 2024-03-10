@@ -2,7 +2,8 @@ from zrb import Task, python_task, runner
 from zrb.helper.python_task import show_lines
 
 from _daily.noto.todo._group import TODO_GROUP
-from _daily.noto.todo._helper import get_items, get_kanban_lines
+from _daily.noto.todo._helper import get_items
+from _daily.noto.todo.kanban._helper import get_kanban_lines
 
 
 @python_task(

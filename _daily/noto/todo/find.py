@@ -1,9 +1,16 @@
 from zrb import StrInput, Task, python_task, runner
 from zrb.helper.python_task import show_lines
 
-from _daily.noto.todo._config import EXISTING_CONTEXT_STR, EXISTING_PROJECT_STR
 from _daily.noto.todo._group import TODO_GROUP
-from _daily.noto.todo._helper import get_items, get_pretty_item_lines
+from _daily.noto.todo._helper import (
+    get_existing_contexts,
+    get_existing_projects,
+    get_items,
+    get_pretty_item_lines,
+)
+
+_EXISTING_CONTEXT_STR = ",".join(get_existing_contexts())
+_EXISTING_PROJECT_STR = ",".join(get_existing_projects())
 
 
 @python_task(
@@ -17,12 +24,12 @@ from _daily.noto.todo._helper import get_items, get_pretty_item_lines
         ),
         StrInput(
             name="project",
-            prompt=f"Project, comma separated (e.g., {EXISTING_PROJECT_STR})",
+            prompt=f"Project, comma separated (e.g., {_EXISTING_PROJECT_STR})",
             default="",
         ),
         StrInput(
             name="context",
-            prompt=f"Context, comma separated (e.g., {EXISTING_CONTEXT_STR})",
+            prompt=f"Context, comma separated (e.g., {_EXISTING_CONTEXT_STR})",
             default="",
         ),
     ],
