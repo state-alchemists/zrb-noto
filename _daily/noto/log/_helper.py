@@ -29,25 +29,21 @@ def append_log(text: str, current_time: datetime = CURRENT_TIME) -> str:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
     time_str: str = current_time.strftime("%H:%M")
-    log_lines = get_log_lines(file_name)
+    log_lines = _get_log_lines(file_name)
     log_lines.append(f"- {time_str}: {text}\n")
     with open(file_name, "w") as file:
         file.write("\n".join(log_lines))
         file.write("\n")
 
 
-def get_log(file_name: Optional[str] = None) -> str:
+def _get_log_lines(file_name: Optional[str] = None) -> List[str]:
     if file_name is None:
         file_name = get_log_file_name()
-    dir_path = Path(os.path.dirname(file_name))
-    dir_path.mkdir(parents=True, exist_ok=True)
-    if not os.path.isfile(file_name):
-        return ""
-    with open(file_name, "r") as file:
-        return file.read().strip()
+    log_str = get_log(file_name)
+    return log_str.split("\n")
 
 
-def get_log_lines(file_name: Optional[str] = None) -> List[str]:
+def get_pretty_log_lines(file_name: Optional[str] = None) -> List[str]:
     if file_name is None:
         file_name = get_log_file_name()
     log_str = get_log(file_name)
@@ -61,3 +57,14 @@ def get_log_lines(file_name: Optional[str] = None) -> List[str]:
         r"__(.*?)__", lambda match: colored(match.group(1), color="yellow"), log_str
     )
     return log_str.split("\n")
+
+
+def get_log(file_name: Optional[str] = None) -> str:
+    if file_name is None:
+        file_name = get_log_file_name()
+    dir_path = Path(os.path.dirname(file_name))
+    dir_path.mkdir(parents=True, exist_ok=True)
+    if not os.path.isfile(file_name):
+        return ""
+    with open(file_name, "r") as file:
+        return file.read().strip()

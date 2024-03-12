@@ -1,7 +1,18 @@
+import os
 import shutil
 import subprocess
 
 from zrb import Task
+from zrb.helper.accessories.color import colored
+
+
+def sync_noto(task: Task) -> int:
+    current_dir = os.path.dirname(__file__)
+    try:
+        return run_cmd_path(task, os.path.join(current_dir, "sync.sh"))
+    except Exception:
+        task.print_err(colored("Cannot sync", color="light_red"))
+        return 0
 
 
 def run_cmd_path(task: Task, command_path: str) -> int:

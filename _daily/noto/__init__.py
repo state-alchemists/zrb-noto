@@ -1,7 +1,7 @@
-from _daily.noto import lint, log, monitor, sync, todo
+from _daily.noto import lint, list, log, sync, todo
 
 assert lint
 assert log
-assert monitor
+assert list
 assert sync
 assert todo

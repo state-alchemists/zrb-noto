@@ -7,14 +7,12 @@ from _daily.noto._config import CURRENT_DIR
 from _daily.noto._env import PROJECT_DIR_ENV
 from _daily.noto._group import NOTO_GROUP
 from _daily.noto._helper import run_cmd_path
-from _daily.noto.lint import lint
 
 
 @python_task(
     name="sync",
     group=NOTO_GROUP,
     description="sync code",
-    upstreams=[lint],
     envs=[PROJECT_DIR_ENV],
 )
 def sync(*args: Any, **kwargs: Any):

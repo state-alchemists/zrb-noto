@@ -1,6 +1,7 @@
 from zrb import StrInput, Task, python_task, runner
 from zrb.helper.python_task import show_lines
 
+from _daily.noto._helper import sync_noto
 from _daily.noto.todo._group import TODO_GROUP
 from _daily.noto.todo._helper import (
     get_existing_contexts,
@@ -37,6 +38,7 @@ _EXISTING_PROJECT_STR = ",".join(get_existing_projects())
 )
 def find(*args, **kwargs):
     task: Task = kwargs.get("_task")
+    sync_noto(task)
     contexts = []
     context_str = kwargs.get("context")
     if context_str:

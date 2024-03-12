@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Mapping, Optional
 
 from zrb.helper.accessories.color import colored
+from zrb.helper.accessories.name import get_random_name
 
 from _daily.noto._config import CURRENT_TIME
 from _daily.noto._helper import get_screen_width
@@ -52,6 +53,22 @@ class Item:
         self.contexts = contexts
         self.projects = projects
         self.keyval = keyval
+        if "id" not in self.keyval:
+            self.keyval["id"] = get_random_name()
+    
+    def set_keyval(self, new_keyval: Mapping[str, str]):
+        old_keyval = self.keyval
+        for key in (
+            "id",
+            "createdAt",
+            "firstCreatedAt",
+            "lastStartedAt",
+            "status",
+            "workDuration",
+        ):
+            if key in old_keyval and key not in new_keyval:
+                new_keyval[key] = old_keyval[key]
+        self.keyval = new_keyval
 
     def start(self):
         timestamp = round(CURRENT_TIME.timestamp())

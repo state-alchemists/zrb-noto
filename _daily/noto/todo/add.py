@@ -3,6 +3,7 @@ from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
 
 from _daily.noto._config import CURRENT_DAY, CURRENT_MONTH, CURRENT_TIME, CURRENT_YEAR
+from _daily.noto._helper import sync_noto
 from _daily.noto.todo._data import Item
 from _daily.noto.todo._group import TODO_GROUP
 from _daily.noto.todo._helper import (
@@ -52,6 +53,7 @@ _EXISTING_PROJECT_STR = ",".join(get_existing_projects())
 )
 def add(*args, **kwargs):
     task: Task = kwargs.get("_task")
+    sync_noto(task)
     description = kwargs.get("description")
     if description.strip() == "":
         task.print_err(colored("⚠️  NOT ADDED: Description cannot be empty"))
@@ -94,6 +96,7 @@ def add(*args, **kwargs):
         keyval=keyval,
     )
     append_item(item=item)
+    sync_noto(task)
     show_lines(task, *get_pretty_item_lines(get_items()))
 
 

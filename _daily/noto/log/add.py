@@ -1,8 +1,9 @@
 from zrb import StrInput, Task, python_task, runner
 from zrb.helper.python_task import show_lines
 
+from _daily.noto._helper import sync_noto
 from _daily.noto.log._group import LOG_GROUP
-from _daily.noto.log._helper import append_log, get_log_lines
+from _daily.noto.log._helper import append_log, get_pretty_log_lines
 
 
 @python_task(
@@ -11,6 +12,7 @@ from _daily.noto.log._helper import append_log, get_log_lines
     inputs=[
         StrInput(
             name="text",
+            shortcut="t",
             prompt="Text",
             default="",
         ),
@@ -19,9 +21,11 @@ from _daily.noto.log._helper import append_log, get_log_lines
 )
 def add(*args, **kwargs):
     task: Task = kwargs.get("_task")
+    sync_noto(task)
     text = kwargs.get("text")
     append_log(text)
-    show_lines(task, *get_log_lines())
+    sync_noto(task)
+    show_lines(task, *get_pretty_log_lines())
 
 
 runner.register(add)

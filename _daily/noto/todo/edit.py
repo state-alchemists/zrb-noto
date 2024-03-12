@@ -3,6 +3,7 @@ from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
 
 from _daily.noto._config import CURRENT_DAY, CURRENT_MONTH, CURRENT_YEAR
+from _daily.noto._helper import sync_noto
 from _daily.noto.todo._group import TODO_GROUP
 from _daily.noto.todo._helper import (
     get_existing_contexts,
@@ -56,6 +57,7 @@ _EXISTING_PROJECT_STR = ",".join(get_existing_projects())
 )
 def edit(*args, **kwargs):
     task: Task = kwargs.get("_task")
+    sync_noto(task)
     # Getting the item
     search = kwargs.get("task")
     items = get_items(search=search, completed=False)
@@ -106,9 +108,10 @@ def edit(*args, **kwargs):
     # keyval
     keyval_input = kwargs.get("keyval")
     if keyval_input.strip() != "":
-        item.keyval = read_keyval_input(keyval_input)
+        item.set_keyval(read_keyval_input(keyval_input))
     # save item
     replace_item(item)
+    sync_noto(task)
     show_lines(task, *get_pretty_item_lines(get_items()))
 
 

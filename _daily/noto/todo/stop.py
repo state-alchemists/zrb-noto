@@ -2,7 +2,8 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
 
-from _daily.noto.log._helper import append_log, get_log_lines
+from _daily.noto._helper import sync_noto
+from _daily.noto.log._helper import append_log, get_pretty_log_lines
 from _daily.noto.todo._group import TODO_GROUP
 from _daily.noto.todo._helper import get_items, get_pretty_item_lines, stop_item
 
@@ -13,6 +14,7 @@ from _daily.noto.todo._helper import get_items, get_pretty_item_lines, stop_item
     inputs=[
         StrInput(
             name="task",
+            shortcut="t",
             prompt="Search pattern (regex)",
             prompt_required=True,
             default="",
@@ -22,6 +24,7 @@ from _daily.noto.todo._helper import get_items, get_pretty_item_lines, stop_item
 )
 def stop(*args, **kwargs):
     task: Task = kwargs.get("_task")
+    sync_noto(task)
     search = kwargs.get("task")
     items = get_items(search=search, completed=False)
     if len(items) == 0:
@@ -43,7 +46,8 @@ def stop(*args, **kwargs):
     item = items[0]
     stop_item(item)
     append_log(f"__STOP__ {item.description}")
-    show_lines(task, *get_log_lines(), "", *get_pretty_item_lines(get_items()))
+    sync_noto(task)
+    show_lines(task, *get_pretty_log_lines(), "", *get_pretty_item_lines(get_items()))
 
 
 runner.register(stop)
