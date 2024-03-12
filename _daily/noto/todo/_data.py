@@ -1,8 +1,10 @@
+import random
+import re
+import string
 from datetime import datetime
 from typing import List, Mapping, Optional
 
 from zrb.helper.accessories.color import colored
-from zrb.helper.accessories.name import get_random_name
 
 from _daily.noto._config import CURRENT_TIME
 from _daily.noto._helper import get_screen_width
@@ -54,8 +56,33 @@ class Item:
         self.projects = projects
         self.keyval = keyval
         if "id" not in self.keyval:
-            self.keyval["id"] = get_random_name()
-    
+            self.keyval["id"] = _get_new_id()
+
+    def match(
+        self,
+        contexts: List[str] = [],
+        projects: List[str] = [],
+        search: str = "",
+        completed: Optional[bool] = None,
+    ):
+        filter_by_context = len(contexts) > 0
+        filter_by_project = len(projects) > 0
+        filter_by_keyword = search != ""
+        if completed is not None and self.completed != completed:
+            return False
+        if filter_by_context and not _has_intersection(self.contexts, contexts):
+            return False
+        if filter_by_project and not _has_intersection(self.projects, projects):
+            return False
+        if filter_by_keyword:
+            if re.search(search, self.description, re.IGNORECASE):
+                return True
+            if "id" in self.keyval:
+                if re.search(search, self.keyval.get("id"), re.IGNORECASE):
+                    return True
+            return False
+        return True
+
     def set_keyval(self, new_keyval: Mapping[str, str]):
         old_keyval = self.keyval
         for key in (
@@ -133,6 +160,9 @@ class Item:
         )
         if keyval_str != "":
             keyval_str = colored(f" {keyval_str}", color="magenta")
+        # id
+        id = self.keyval.get("id")
+        id_str = colored(f"[{id}]", attrs=["dark"])
         # description
         description_str = self._get_colored_description()
         # Status string
@@ -147,9 +177,9 @@ class Item:
             duration_str = colored(f" (🌱 {duration_str})", color="green")
         # small screen
         if screen_width <= 80:
-            return f"{completed_str} {priority_str} {status_icon} {description_str}{project_str}{context_str}{keyval_str}{duration_str}{work_duration_str}"  # noqa
+            return f"{completed_str} {priority_str} {status_icon} {id_str} {description_str}{project_str}{context_str}{keyval_str}{work_duration_str}"  # noqa
         # normal screen
-        return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {status_icon} {description_str}{project_str}{context_str}{keyval_str}{duration_str}{work_duration_str}"  # noqa
+        return f"{completed_str} {priority_str} {completion_date_str} {creation_date_str} {status_icon} {id_str} {description_str}{project_str}{context_str}{keyval_str}{duration_str}{work_duration_str}"  # noqa
 
     def _get_published_keyval(self):
         return {
@@ -157,6 +187,7 @@ class Item:
             for key, val in self.keyval.items()
             if key
             not in [
+                "id",
                 "createdAt",
                 "firstStartedAt",
                 "lastStartedAt",
@@ -198,7 +229,7 @@ class Item:
                 work_duration += round(CURRENT_TIME.timestamp() - last_started_at)
         if work_duration == 0:
             return ""
-        return self._seconds_to_human_time(work_duration)
+        return _seconds_to_human_time(work_duration)
 
     def get_duration_str(self):
         created_at = int(self.keyval.get("createdAt", "-1"))
@@ -207,29 +238,7 @@ class Item:
         duration = round(CURRENT_TIME.timestamp() - created_at)
         if duration == 0:
             return ""
-        return self._seconds_to_human_time(duration)
-
-    def _seconds_to_human_time(self, seconds: int):
-        years = seconds // 31536000
-        seconds %= 31536000
-        months = seconds // 2592000
-        seconds %= 2592000
-        days = seconds // 86400
-        seconds %= 86400
-        hours = seconds // 3600
-        seconds %= 3600
-        minutes = seconds // 60
-        if years > 0:
-            return f"{years}y {months}m {days}d"
-        if months > 0:
-            return f"{months}m {days}d {hours}h"
-        if days > 0:
-            return f"{days}d {hours}h"
-        if hours > 0:
-            return f"{hours}h {minutes} min"
-        if minutes == 0:
-            return ""
-        return f"{minutes} min"
+        return _seconds_to_human_time(duration)
 
     def as_str(self) -> str:
         # complete
@@ -261,3 +270,110 @@ class Item:
         if keyval_str != "":
             keyval_str = f" {keyval_str}"
         return f"{completed_str}{priority_str}{completion_date_str}{creation_date_str}{self.description}{project_str}{context_str}{keyval_str}"  # noqa
+
+
+def _has_intersection(list1: List[str], list2: List[str]):
+    set1 = set(list1)
+    set2 = set(list2)
+    return not set1.isdisjoint(set2)
+
+
+def _seconds_to_human_time(seconds: int):
+    years = seconds // 31536000
+    seconds %= 31536000
+    months = seconds // 2592000
+    seconds %= 2592000
+    days = seconds // 86400
+    seconds %= 86400
+    hours = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    if years > 0:
+        return f"{years}y {months}m {days}d"
+    if months > 0:
+        return f"{months}m {days}d {hours}h"
+    if days > 0:
+        return f"{days}d {hours}h"
+    if hours > 0:
+        return f"{hours}h {minutes} min"
+    if minutes == 0:
+        return ""
+    return f"{minutes} min"
+
+
+def _get_new_id(
+    separator: str = "-", add_random_digit: bool = True, digit_count: int = 4
+) -> str:
+    # Adjective prefixes and noun suffixes, each exactly 4 characters
+    prefixes = [
+        "bold",
+        "calm",
+        "dark",
+        "deep",
+        "fast",
+        "firm",
+        "glad",
+        "grey",
+        "hard",
+        "high",
+        "kind",
+        "late",
+        "lean",
+        "long",
+        "loud",
+        "mild",
+        "neat",
+        "pure",
+        "rare",
+        "rich",
+        "safe",
+        "slow",
+        "soft",
+        "tall",
+        "thin",
+        "trim",
+        "vast",
+        "warm",
+        "weak",
+        "wild",
+    ]
+    suffixes = [
+        "arch",
+        "area",
+        "atom",
+        "base",
+        "beam",
+        "bell",
+        "bolt",
+        "bone",
+        "bulk",
+        "bush",
+        "cell",
+        "chip",
+        "clay",
+        "coal",
+        "coil",
+        "cone",
+        "cube",
+        "disk",
+        "dust",
+        "face",
+        "film",
+        "foam",
+        "frog",
+        "fuel",
+        "gate",
+        "gear",
+        "hall",
+        "hand",
+        "horn",
+        "leaf",
+    ]
+    prefix = random.choice(prefixes)
+    suffix = random.choice(suffixes)
+    parts = [prefix, suffix]
+    if add_random_digit:
+        random_digit = "".join(random.choices(string.digits, k=digit_count))
+        parts.append(random_digit)
+    return separator.join(parts)
+

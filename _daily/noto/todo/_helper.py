@@ -88,23 +88,15 @@ def get_items(
         content = file.read()
     lines = content.split("\n")
     items: List[Item] = []
-    filter_by_context = len(contexts) > 0
-    filter_by_project = len(projects) > 0
-    filter_by_keyword = search != ""
     for line in lines:
         line = line.strip()
         if not line:
             continue
         item = parse_item(line)
-        if completed is not None and item.completed != completed:
-            continue
-        if filter_by_context and not _has_intersection(item.contexts, contexts):
-            continue
-        if filter_by_project and not _has_intersection(item.projects, projects):
-            continue
-        if filter_by_keyword and not re.search(search, item.description, re.IGNORECASE):
-            continue
-        items.append(item)
+        if item.match(
+            contexts=contexts, projects=projects, search=search, completed=completed
+        ):
+            items.append(item)
     return _sort_items(items)
 
 

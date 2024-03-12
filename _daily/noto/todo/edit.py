@@ -4,6 +4,7 @@ from zrb.helper.python_task import show_lines
 
 from _daily.noto._config import CURRENT_DAY, CURRENT_MONTH, CURRENT_YEAR
 from _daily.noto._helper import sync_noto
+from _daily.noto.log._helper import append_log, get_pretty_log_lines
 from _daily.noto.todo._group import TODO_GROUP
 from _daily.noto.todo._helper import (
     get_existing_contexts,
@@ -112,7 +113,7 @@ def edit(*args, **kwargs):
     # save item
     replace_item(item)
     sync_noto(task)
-    show_lines(task, *get_pretty_item_lines(get_items()))
+    show_lines(task, *get_pretty_log_lines(), "", *get_pretty_item_lines(get_items()))
 
 
 runner.register(edit)

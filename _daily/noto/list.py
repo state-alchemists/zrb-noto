@@ -17,7 +17,7 @@ from _daily.noto.todo._helper import get_items, get_pretty_item_lines
 def list(*args: Any, **kwargs: Any):
     task: Task = kwargs.get("_task")
     sync_noto(task)
-    items = get_items()
+    items = get_items(completed=False)
     show_lines(task, *get_pretty_log_lines(), "", *get_pretty_item_lines(items))
 
 
