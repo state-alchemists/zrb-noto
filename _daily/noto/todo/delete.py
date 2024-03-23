@@ -2,6 +2,7 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
 
+from _daily.noto._env import PROJECT_DIR_ENV
 from _daily.noto._helper import sync_noto
 from _daily.noto.todo._group import TODO_GROUP
 from _daily.noto.todo._helper import delete_item, get_items, get_pretty_item_lines
@@ -18,6 +19,7 @@ from _daily.noto.todo._helper import delete_item, get_items, get_pretty_item_lin
             default="",
         ),
     ],
+    envs=[PROJECT_DIR_ENV],
     retry=0,
 )
 def delete(*args, **kwargs):

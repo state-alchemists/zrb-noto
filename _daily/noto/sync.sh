@@ -1,11 +1,11 @@
 set -e
 cd "${PROJECT_DIR}"
-if git diff --quiet
+git add . -A
+if git diff --quiet && git diff --cached --quiet
 then
     echo "Nothing to commit"
 else
     echo "Commiting changes"
-    git add . -A
     git commit -m "Save changes on $(date)"
 fi
 GIT_BRANCH="$(git symbolic-ref --short HEAD)"

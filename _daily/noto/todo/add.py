@@ -3,6 +3,7 @@ from zrb.helper.accessories.color import colored
 from zrb.helper.python_task import show_lines
 
 from _daily.noto._config import CURRENT_DAY, CURRENT_MONTH, CURRENT_TIME, CURRENT_YEAR
+from _daily.noto._env import PROJECT_DIR_ENV
 from _daily.noto._helper import sync_noto
 from _daily.noto.todo._data import Item
 from _daily.noto.todo._group import TODO_GROUP
@@ -49,6 +50,7 @@ _EXISTING_PROJECT_STR = ",".join(get_existing_projects())
             default="",
         ),
     ],
+    envs=[PROJECT_DIR_ENV],
     retry=0,
 )
 def add(*args, **kwargs):

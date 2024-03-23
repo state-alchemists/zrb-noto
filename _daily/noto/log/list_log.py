@@ -4,6 +4,7 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.python_task import show_lines
 
 from _daily.noto._config import CURRENT_TIME
+from _daily.noto._env import PROJECT_DIR_ENV
 from _daily.noto._helper import sync_noto
 from _daily.noto.log._group import LOG_GROUP
 from _daily.noto.log._helper import get_log_file_name, get_pretty_log_lines
@@ -19,6 +20,7 @@ from _daily.noto.log._helper import get_log_file_name, get_pretty_log_lines
             default=CURRENT_TIME.strftime("%Y-%m-%d"),
         ),
     ],
+    envs=[PROJECT_DIR_ENV],
     retry=0,
 )
 def list_log(*args, **kwargs):
