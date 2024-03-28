@@ -26,6 +26,7 @@ _EXISTING_PROJECT_STR = ",".join(get_existing_projects())
     inputs=[
         StrInput(
             name="task",
+            shortcut="t",
             prompt="Task",
             default="",
         ),

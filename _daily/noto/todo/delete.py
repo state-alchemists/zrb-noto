@@ -14,6 +14,7 @@ from _daily.noto.todo._helper import delete_item, get_items, get_pretty_item_lin
     inputs=[
         StrInput(
             name="task",
+            shortcut="t",
             prompt="Search pattern (regex)",
             prompt_required=True,
             default="",

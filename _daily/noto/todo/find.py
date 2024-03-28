@@ -20,7 +20,8 @@ _EXISTING_PROJECT_STR = ",".join(get_existing_projects())
     group=TODO_GROUP,
     inputs=[
         StrInput(
-            name="search",
+            name="task",
+            shortcut="t",
             prompt="Search pattern (regex)",
             default="",
         ),
