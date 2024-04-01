@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import List, Mapping, Optional
 
 from zrb.helper.accessories.color import colored
+from zrb.helper.accessories.name import get_random_name
 
 from _daily.noto._config import CURRENT_TIME
 from _daily.noto._helper import get_screen_width
@@ -56,7 +57,7 @@ class Item:
         self.projects = projects
         self.keyval = keyval
         if "id" not in self.keyval:
-            self.keyval["id"] = _get_new_id()
+            self.keyval["id"] = get_random_name()
 
     def match(
         self,
@@ -67,7 +68,7 @@ class Item:
     ):
         filter_by_context = len(contexts) > 0
         filter_by_project = len(projects) > 0
-        filter_by_keyword = search != ""
+        filter_by_keyword = search != "" and search is not None
         if completed is not None and self.completed != completed:
             return False
         if filter_by_context and not _has_intersection(self.contexts, contexts):
@@ -299,81 +300,3 @@ def _seconds_to_human_time(seconds: int):
     if minutes == 0:
         return ""
     return f"{minutes} min"
-
-
-def _get_new_id(
-    separator: str = "-", add_random_digit: bool = True, digit_count: int = 4
-) -> str:
-    # Adjective prefixes and noun suffixes, each exactly 4 characters
-    prefixes = [
-        "bold",
-        "calm",
-        "dark",
-        "deep",
-        "fast",
-        "firm",
-        "glad",
-        "grey",
-        "hard",
-        "high",
-        "kind",
-        "late",
-        "lean",
-        "long",
-        "loud",
-        "mild",
-        "neat",
-        "pure",
-        "rare",
-        "rich",
-        "safe",
-        "slow",
-        "soft",
-        "tall",
-        "thin",
-        "trim",
-        "vast",
-        "warm",
-        "weak",
-        "wild",
-    ]
-    suffixes = [
-        "arch",
-        "area",
-        "atom",
-        "base",
-        "beam",
-        "bell",
-        "bolt",
-        "bone",
-        "bulk",
-        "bush",
-        "cell",
-        "chip",
-        "clay",
-        "coal",
-        "coil",
-        "cone",
-        "cube",
-        "disk",
-        "dust",
-        "face",
-        "film",
-        "foam",
-        "frog",
-        "fuel",
-        "gate",
-        "gear",
-        "hall",
-        "hand",
-        "horn",
-        "leaf",
-    ]
-    prefix = random.choice(prefixes)
-    suffix = random.choice(suffixes)
-    parts = [prefix, suffix]
-    if add_random_digit:
-        random_digit = "".join(random.choices(string.digits, k=digit_count))
-        parts.append(random_digit)
-    return separator.join(parts)
-

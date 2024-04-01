@@ -51,7 +51,7 @@ def parse_item(line: str) -> Item:
     # Remove contexts, projects, and keyval from description
     description = re.sub(
         r"(@[\w\-]+|\+[\w\-]+|[\w\-]+:[\w\-]+)", "", line
-    ).strip()  # noqa
+    ).strip()
     return Item(
         description=description,
         old_description=description,
