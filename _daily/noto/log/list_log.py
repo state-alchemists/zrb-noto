@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from zrb import StrInput, Task, python_task, runner
-from zrb.helper.python_task import show_lines
+from zrb.helper.task import show_lines
 
 from _daily.noto._config import CURRENT_TIME
 from _daily.noto._env import PROJECT_DIR_ENV

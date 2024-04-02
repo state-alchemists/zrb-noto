@@ -1,5 +1,5 @@
 from zrb import StrInput, Task, python_task, runner
-from zrb.helper.python_task import show_lines
+from zrb.helper.task import show_lines
 
 from _daily.noto._env import PROJECT_DIR_ENV
 from _daily.noto._helper import sync_noto
