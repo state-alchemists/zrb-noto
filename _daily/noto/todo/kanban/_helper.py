@@ -5,16 +5,20 @@ from zrb.helper.accessories.color import colored
 from _daily.noto.todo._data import STATUS_ATTRIBUTE_MAP, STATUS_COLOR_MAP, Item
 
 
-def get_kanban_lines(items: List[Item]) -> List[str]:
+def get_kanban_lines(items: List[Item], screen_width: int) -> List[str]:
     status_lines: Mapping[str][List[str]] = {}
     status_max_length: Mapping[str][int] = {}
     status_list = ("NEW", "STOPPED", "STARTED", "COMPLETED")
+    max_width = max(round(screen_width/4), 15)
     for status in status_list:
         status_lines[status] = []
         for item in items:
             if item.get_status() != status:
                 continue
-            status_lines[status].append(f"* {item.description}")
+            item_id = item.keyval.get("id", "")
+            if item_id != "":
+                status_lines[status].append(f"* [{item_id}]"[:max_width])
+            status_lines[status].append(f"  {item.description}"[:max_width])
             project_str = " ".join(f"+{project}" for project in sorted(item.projects))
             context_str = " ".join(f"@{context}" for context in sorted(item.contexts))
             work_duration = item.get_work_duration_str()
@@ -27,13 +31,13 @@ def get_kanban_lines(items: List[Item]) -> List[str]:
             ):
                 status_lines[status].append("")
             if project_str != "":
-                status_lines[status].append(f"  {project_str}")
+                status_lines[status].append(f"  {project_str}"[:max_width])
             if context_str != "":
-                status_lines[status].append(f"  {context_str}")
+                status_lines[status].append(f"  {context_str}"[:max_width])
             if work_duration != "":
-                status_lines[status].append(f"  Work: {work_duration}")
+                status_lines[status].append(f"  Work: {work_duration}"[:max_width])
             if duration != "":
-                status_lines[status].append(f"  Age: {duration}")
+                status_lines[status].append(f"  Age: {duration}"[:max_width])
             status_lines[status].append("")
         status_max_length[status] = (
             max(len(s) for s in status_lines[status])
