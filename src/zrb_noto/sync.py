@@ -27,7 +27,7 @@ def create_sync_noto_task(
     async def sync_noto(*args: Any, **kwargs: Any):
         task: Task = kwargs.get("_task")
         try:
-            run_cmd_path(task, os.path.join(_CURRENT_DIR, "sync.sh"))
+            await run_cmd_path(task, os.path.join(_CURRENT_DIR, "sync.sh"))
         except Exception as e:
             if not ignore_error:
                 raise e

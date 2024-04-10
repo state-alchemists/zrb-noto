@@ -4,13 +4,13 @@ import subprocess
 from zrb import Task
 
 
-def run_cmd_path(task: Task, command_path: str) -> int:
+async def run_cmd_path(task: Task, command_path: str) -> int:
     with open(command_path, "r") as file:
         command = file.read()
-        return run_cmd(task, command)
+        return await run_cmd(task, command)
 
 
-def run_cmd(task: Task, command: str) -> int:
+async def run_cmd(task: Task, command: str) -> int:
     # Start the process
     process = subprocess.Popen(
         command,
