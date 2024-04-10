@@ -34,6 +34,9 @@ jobs:
         shell: bash
         run: |
           set -e
+          echo "🏁 Install project dependencies"
+          poetry config virtualenvs.create false --local
+          poetry install
           export ZRB_ENV=${{ inputs.environment }}
           export ZRB_SHOW_PROMPT=false
           echo "🏁 Start running"
