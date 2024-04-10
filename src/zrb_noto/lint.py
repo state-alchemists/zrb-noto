@@ -11,10 +11,7 @@ _CURRENT_DIR = os.path.dirname(__file__)
 
 
 @python_task(
-    name="lint",
-    group=noto_group,
-    description="Lint code",
-    envs=[LOCAL_REPO_DIR_ENV]
+    name="lint", group=noto_group, description="Lint code", envs=[LOCAL_REPO_DIR_ENV]
 )
 def lint_noto(*args: Any, **kwargs: Any):
     task: Task = kwargs.get("_task")

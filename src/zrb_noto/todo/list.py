@@ -3,7 +3,7 @@ from zrb.helper.task import show_lines
 
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
-from ._helper import get_todo_items, get_pretty_todo_item_lines
+from ._helper import get_pretty_todo_item_lines, get_todo_items
 
 
 @python_task(

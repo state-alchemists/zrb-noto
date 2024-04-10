@@ -3,25 +3,14 @@ from zrb.helper.task import show_lines
 
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
-from ._helper import (
-    get_todo_items,
-    get_pretty_todo_item_lines,
-)
-from ._input import (
-    task_input,
-    project_input,
-    context_input,
-)
+from ._helper import get_pretty_todo_item_lines, get_todo_items
+from ._input import context_input, project_input, task_input
 
 
 @python_task(
     name="find",
     group=noto_todo_group,
-    inputs=[
-        task_input,
-        project_input,
-        context_input
-    ],
+    inputs=[task_input, project_input, context_input],
     retry=0,
 )
 def find_todo(*args, **kwargs):

@@ -1,10 +1,7 @@
 from zrb import StrInput
 
 from .._config import CURRENT_DAY, CURRENT_MONTH, CURRENT_TIME, CURRENT_YEAR
-from ._helper import (
-    get_existing_todo_contexts,
-    get_existing_todo_projects,
-)
+from ._helper import get_existing_todo_contexts, get_existing_todo_projects
 
 _EXISTING_CONTEXT_STR = ",".join(get_existing_todo_contexts())
 _EXISTING_PROJECT_STR = ",".join(get_existing_todo_projects())

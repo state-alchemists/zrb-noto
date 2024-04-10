@@ -2,10 +2,10 @@ from zrb import Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
-from ..sync import create_sync_noto_task
 from ..log._helper import append_log_item, get_pretty_log_lines
+from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
-from ._helper import get_todo_items, get_pretty_todo_item_lines, start_todo_item
+from ._helper import get_pretty_todo_item_lines, get_todo_items, start_todo_item
 from ._input import task_input
 
 
@@ -48,10 +48,7 @@ def start_item(*args, **kwargs):
 def start_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
     show_lines(
-        task,
-        *get_pretty_log_lines(),
-        "",
-        *get_pretty_todo_item_lines(get_todo_items())
+        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(get_todo_items())
     )
 
 

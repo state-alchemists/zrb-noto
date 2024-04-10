@@ -2,23 +2,23 @@ from zrb import Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
-from ..sync import create_sync_noto_task
 from ..log._helper import get_pretty_log_lines
+from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
 from ._helper import (
-    get_todo_items,
     get_pretty_todo_item_lines,
+    get_todo_items,
     read_keyval_input,
     replace_todo_item,
 )
 from ._input import (
-    task_input,
+    context_input,
+    date_input,
     description_input,
+    keyval_input,
     priority_input,
     project_input,
-    context_input,
-    keyval_input,
-    date_input
+    task_input,
 )
 
 
@@ -109,10 +109,7 @@ def edit_item(*args, **kwargs):
 def edit_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
     show_lines(
-        task,
-        *get_pretty_log_lines(),
-        "",
-        *get_pretty_todo_item_lines(get_todo_items())
+        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(get_todo_items())
     )
 
 

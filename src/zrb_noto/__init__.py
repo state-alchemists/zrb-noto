@@ -10,10 +10,10 @@ from .todo import (
     edit_todo,
     find_todo,
     list_todo,
+    noto_todo_group,
     show_kanban,
     start_todo,
     stop_todo,
-    noto_todo_group,
 )
 from .wiki import wiki_tasks
 

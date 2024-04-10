@@ -5,8 +5,8 @@ from zrb.helper.task import show_lines
 from ..log._helper import append_log_item, get_pretty_log_lines
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
+from ._helper import complete_todo_item, get_pretty_todo_item_lines, get_todo_items
 from ._input import task_input
-from ._helper import complete_todo_item, get_todo_items, get_pretty_todo_item_lines
 
 
 @python_task(
@@ -48,10 +48,7 @@ def complete_item(*args, **kwargs):
 def complete_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
     show_lines(
-        task,
-        *get_pretty_log_lines(),
-        "",
-        *get_pretty_todo_item_lines(get_todo_items())
+        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(get_todo_items())
     )
 
 

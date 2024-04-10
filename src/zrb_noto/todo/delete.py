@@ -3,9 +3,9 @@ from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
 from ..sync import create_sync_noto_task
-from ._input import task_input
 from ._group import noto_todo_group
-from ._helper import delete_todo_item, get_todo_items, get_pretty_todo_item_lines
+from ._helper import delete_todo_item, get_pretty_todo_item_lines, get_todo_items
+from ._input import task_input
 
 
 @python_task(

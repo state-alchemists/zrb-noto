@@ -8,17 +8,17 @@ from ._data import Item
 from ._group import noto_todo_group
 from ._helper import (
     append_todo_item,
-    get_todo_items,
     get_pretty_todo_item_lines,
+    get_todo_items,
     read_keyval_input,
 )
 from ._input import (
+    context_input,
+    date_input,
     description_input,
+    keyval_input,
     priority_input,
     project_input,
-    context_input,
-    keyval_input,
-    date_input
 )
 
 
