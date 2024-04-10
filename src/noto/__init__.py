@@ -1,5 +1,6 @@
 from ._group import noto_group, noto_wiki_group
 from .lint import lint_noto
+from .list import list_noto
 from .log import add_log, list_log, noto_log_group
 from .sync import sync_noto
 from .todo import (
@@ -32,5 +33,6 @@ assert list_todo
 assert start_todo
 assert stop_todo
 assert lint_noto
+assert list_noto
 assert sync_noto
 assert wiki_tasks is not None

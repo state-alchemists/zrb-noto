@@ -4,8 +4,8 @@ from zrb import Task, python_task, runner
 from zrb.helper.task import show_lines
 
 from ._group import noto_group
-from ._helper import sync_noto
 from .log._helper import get_pretty_log_lines
+from .sync import create_sync_noto_task
 from .todo._helper import get_todo_items, get_pretty_todo_item_lines
 
 
@@ -17,9 +17,9 @@ from .todo._helper import get_todo_items, get_pretty_todo_item_lines
 )
 def list_noto(*args: Any, **kwargs: Any):
     task: Task = kwargs.get("_task")
-    sync_noto(task)
     items = get_todo_items(completed=False)
     show_lines(task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(items))
 
 
+create_sync_noto_task() >> list_noto
 runner.register(list_noto)
