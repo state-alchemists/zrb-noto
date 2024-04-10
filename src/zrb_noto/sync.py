@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
 
-from zrb import Env, Group, Task, CmdTask, runner
+from zrb import CmdTask, Env, Group, Task, runner
 
 from ._env import LOCAL_REPO_DIR_ENV, REMOTE_GIT_URL_ENV
 from ._group import noto_group
@@ -21,17 +21,14 @@ def create_sync_noto_task(
         description="Sync noto",
         upstreams=upstreams,
         envs=[
-            LOCAL_REPO_DIR_ENV, REMOTE_GIT_URL_ENV,
-            Env(
-                name="IGNORE_ERROR",
-                os_name="",
-                default="1" if ignore_error else "0"
-            ),
+            LOCAL_REPO_DIR_ENV,
+            REMOTE_GIT_URL_ENV,
+            Env(name="IGNORE_ERROR", os_name="", default="1" if ignore_error else "0"),
         ],
         retry=retry,
         cmd_path=os.path.join(_CURRENT_DIR, "sync.sh"),
         should_show_cmd=False,
-        should_print_cmd_result=False
+        should_print_cmd_result=False,
     )
     return sync_noto
 

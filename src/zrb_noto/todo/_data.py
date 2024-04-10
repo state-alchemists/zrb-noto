@@ -169,7 +169,7 @@ class Item:
         # work duration
         work_duration_str = self.get_work_duration_str()
         if work_duration_str != "":
-            work_duration_str = colored(f" (⚙️ {work_duration_str})", color="cyan")
+            work_duration_str = colored(f" (🔨 {work_duration_str})", color="cyan")
         # duration
         duration_str = self.get_duration_str()
         if duration_str != "":

@@ -15,6 +15,6 @@ lint_noto = CmdTask(
     envs=[LOCAL_REPO_DIR_ENV],
     cmd_path=os.path.join(_CURRENT_DIR, "lint.sh"),
     should_show_cmd=False,
-    should_print_cmd_result=False
+    should_print_cmd_result=False,
 )
 runner.register(lint_noto)
