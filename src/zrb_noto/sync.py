@@ -24,7 +24,7 @@ def create_sync_noto_task(
         envs=[LOCAL_REPO_DIR_ENV, REMOTE_GIT_URL_ENV],
         retry=retry,
     )
-    def sync_noto(*args: Any, **kwargs: Any):
+    async def sync_noto(*args: Any, **kwargs: Any):
         task: Task = kwargs.get("_task")
         try:
             run_cmd_path(task, os.path.join(_CURRENT_DIR, "sync.sh"))
