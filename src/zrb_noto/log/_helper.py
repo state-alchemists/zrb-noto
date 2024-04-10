@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from zrb.helper.accessories.color import colored
 
-from .._config import CURRENT_TIME, LOG_DIR_PATH
+from .._config import CURRENT_TIME, LOG_ABS_DIR_PATH
 
 _STATUS_COLOR_MAP = {
     "START": "cyan",
@@ -20,7 +20,7 @@ def get_log_file_name(current_time: datetime = CURRENT_TIME) -> str:
     month = current_time.strftime("%m")
     date = current_time.strftime("%d")
     return os.path.join(
-        LOG_DIR_PATH, f"{year}", f"{year}-{month}", f"{year}-{month}-{date}.md"
+        LOG_ABS_DIR_PATH, f"{year}", f"{year}-{month}", f"{year}-{month}-{date}.md"
     )
 
 
