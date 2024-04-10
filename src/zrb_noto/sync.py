@@ -1,11 +1,10 @@
 import os
-from typing import Any, List, Optional
+from typing import List, Optional
 
-from zrb import Group, Task, python_task, runner
+from zrb import Env, Group, Task, CmdTask, runner
 
 from ._env import LOCAL_REPO_DIR_ENV, REMOTE_GIT_URL_ENV
 from ._group import noto_group
-from ._helper import run_cmd_path
 
 _CURRENT_DIR = os.path.dirname(__file__)
 
@@ -16,24 +15,26 @@ def create_sync_noto_task(
     ignore_error: bool = True,
     upstreams: List[Task] = [],
 ) -> Task:
-    @python_task(
+    sync_noto = CmdTask(
         name="sync",
         group=group,
         description="Sync noto",
         upstreams=upstreams,
-        envs=[LOCAL_REPO_DIR_ENV, REMOTE_GIT_URL_ENV],
+        envs=[
+            LOCAL_REPO_DIR_ENV, REMOTE_GIT_URL_ENV,
+            Env(
+                name="IGNORE_ERROR",
+                os_name="",
+                default="1" if ignore_error else "0"
+            ),
+        ],
         retry=retry,
+        cmd_path=os.path.join(_CURRENT_DIR, "sync.sh"),
+        should_show_cmd=False,
+        should_print_cmd_result=False
     )
-    async def sync_noto(*args: Any, **kwargs: Any):
-        task: Task = kwargs.get("_task")
-        try:
-            await run_cmd_path(task, os.path.join(_CURRENT_DIR, "sync.sh"))
-        except Exception as e:
-            if not ignore_error:
-                raise e
-
     return sync_noto
 
 
-sync_noto = create_sync_noto_task(group=noto_group, ignore_error=False, retry=3)
+sync_noto = create_sync_noto_task(group=noto_group, ignore_error=False, retry=2)
 runner.register(sync_noto)

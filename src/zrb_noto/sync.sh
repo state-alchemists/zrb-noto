@@ -1,5 +1,15 @@
 set -e
 
+if [ "${IGNORE_ERROR}" = "1" ]
+then
+    # Define cleanup operations or override commands here
+    cleanup() {
+        exit 0 # Override the exit code
+    }
+    # Trap the EXIT signal
+    trap cleanup EXIT
+fi
+
 if [ ! -d "${LOCAL_REPO_DIR}" ]
 then
     echo "Local repository not found, cloning..."
