@@ -1,21 +1,27 @@
 [tool.poetry]
-name = ""
+name = "noto"
 version = "0.0.1"
-description = "Just another Zrb project"
-authors = ["gofrendi <gofrendi@gmail.com>"]
+description = "Personal todo and logging management"
+authors = ["Go Frendi Gunawan <gofrendiasgard@gmail.com>"]
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://github.com/goFrendiAsgard/noto"
+repository = "https://github.com/goFrendiAsgard/noto"
+documentation = "https://github.com/goFrendiAsgard/noto"
 keywords = []
-packages = [
-  {include = "", from = ".."},
-]
 
 [tool.poetry.dependencies]
 python = ">=3.10.0,<4.0.0"
-zrb = ">=0.11.0"
+zrb = ">=0.11.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "~7.0.0"
-black = "~24.2.0"
+black = "~24.3.0"
 isort = "~5.13.2"
+pytest = "~7.4.0"
+pytest-cov = "~4.1.0"
+pytest-asyncio = "~0.21.0"
+flameprof = "~0.4"
 
 [tool.poetry.scripts]
 

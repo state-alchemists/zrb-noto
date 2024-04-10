@@ -2,50 +2,53 @@
 
 Noto is a personal management tool based on [Zrb](https://pypi.org/project/zrb) and [todo.txt](https://github.com/todotxt/todo.txt).
 
-# How to use
+# Installing Noto
 
-- Ensure zrb is installed
-- Fork this repository
-- Clone this repository to your local computer
-- Start working
+```bash
+pip install zrb
+pip install noto
+```
 
-    ```bash
-    zrb todo list
-    ```
+# Setting up Repository
 
-- Add zrb auto completion on your `~/.bashrc` or `~/.zshrc`
+## Making Noto accessible
 
-    ```bash
-    # Enable auto completion
-    _CURRENT_SHELL=$(ps -p $$ | awk 'NR==2 {print $4}')
-    case "$_CURRENT_SHELL" in
-    *zsh)
-        _CURRENT_SHELL="zsh"
-        ;;
-    *bash)
-        _CURRENT_SHELL="bash"
-        ;;
-    esac
-    if [ "$_CURRENT_SHELL" = "zsh" ] || [ "$_CURRENT_SHELL" = "bash" ]
-    then
-        eval "$(_ZRB_COMPLETE=${_CURRENT_SHELL}_source zrb)"
-    fi
-    ```
+First of all, you will need a file named `~/zrb_init.py`.
 
-- Load noto automatically on your `~/.bashrc` or `~/.zshrc`
+```python
+import noto
+```
 
-    ```bash
-    # Load daily if exists
-    if [ -f "${HOME}/daily/zrb_init.py" ]
-    then
-        export ZRB_INIT_SCRIPTS="${HOME}/daily/zrb_init.py"
-        # Load .env if exists
-        if [ -f "${HOME}/daily/.env" ]
-        then
-            source "${HOME}/daily/.env"
-        fi
-    fi
-    ```
+Then, you need to set the value of `ZRB_INIT_SCRIPTS` variable as follows:
+
+```bash
+export ZRB_INIT_SCRIPTS=${ZRB_INIT_SCRIPTS}:~/zrb_init.py
+```
+
+To automatically `ZRB_INIT_SCRIPTS`, you can add the script to your `~/.bashrc` or `~/.zshrc`.
+
+## Setting up a daily repository
+
+- Create an empty repository on Github/Gitlab
+- Clone the repository to your local computer
+- Configure Noto by setting up the following variables
+
+  ```bash
+  export NOTO_LOCAL_REPO=${HOME}/daily
+  export NOTO_REMOTE_GIT=git@github.com:yourUserName/daily.git
+  ```
+
+# Start working
+
+```bash
+zrb noto list
+zrb todo add -t "Learn noto"
+zrb todo start -t "Learn noto"
+zrb todo stop -t "Learn noto"
+zrb todo complete -t "Learn noto"
+zrb noto list
+```
+
 
 
 # Trivia
