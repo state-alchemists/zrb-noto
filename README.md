@@ -6,7 +6,7 @@ Noto is a personal management tool based on [Zrb](https://pypi.org/project/zrb) 
 
 ```bash
 pip install zrb
-pip install noto
+pip install zrb-noto
 ```
 
 # Setting up Repository

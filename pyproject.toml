@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "noto"
+name = "zrb-noto"
 version = "0.0.1"
 description = "Personal todo and logging management"
 authors = ["Go Frendi Gunawan <gofrendiasgard@gmail.com>"]

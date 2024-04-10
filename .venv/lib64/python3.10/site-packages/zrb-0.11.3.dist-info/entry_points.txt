@@ -1,0 +1,3 @@
+[console_scripts]
+zrb=zrb.__main__:cli
+

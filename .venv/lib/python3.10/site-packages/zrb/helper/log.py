@@ -1,0 +1,23 @@
+import logging
+
+from zrb.config.config import logging_level
+from zrb.helper.accessories.color import colored
+
+# create logger
+logger = logging.getLogger("zrb")
+logger.setLevel(logging_level)
+
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging_level)
+
+# create formatter
+formatter = logging.Formatter(
+    colored("%(levelname)-6s %(asctime)s", attrs=["dark"]) + " %(message)s"
+)
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(ch)
