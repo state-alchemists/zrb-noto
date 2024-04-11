@@ -10,6 +10,7 @@ _CURRENT_DIR = os.path.dirname(__file__)
 
 
 def create_sync_noto_task(
+    name: str = "sync",
     group: Optional[Group] = None,
     retry: int = 0,
     ignore_error: bool = True,
@@ -17,7 +18,7 @@ def create_sync_noto_task(
     custom_commit_message: bool = False,
 ) -> Task:
     sync_noto = CmdTask(
-        name="sync",
+        name=name,
         group=group,
         description="Sync noto",
         upstreams=upstreams,

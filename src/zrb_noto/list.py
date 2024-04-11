@@ -18,8 +18,10 @@ from .todo._helper import get_pretty_todo_item_lines, get_todo_items
 def list_noto(*args: Any, **kwargs: Any):
     task: Task = kwargs.get("_task")
     items = get_todo_items(completed=False)
-    show_lines(task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(items))
+    show_lines(
+        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(items)
+    )
 
 
-create_sync_noto_task() >> list_noto
+create_sync_noto_task(name="pre-sync") >> list_noto
 runner.register(list_noto)

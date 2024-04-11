@@ -19,5 +19,5 @@ def list_todo(*args, **kwargs):
     )
 
 
-create_sync_noto_task() >> list_todo
+create_sync_noto_task(name="pre-sync") >> list_todo
 runner.register(list_todo)

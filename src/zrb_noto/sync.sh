@@ -24,7 +24,6 @@ if git diff --quiet && git diff --cached --quiet
 then
     echo "Nothing to commit"
 else
-    echo "Commiting changes"
     if [ -z "${COMMIT_MESSAGE}" ]
     then
         COMMIT_MESSAGE="Modified on $(date)"
