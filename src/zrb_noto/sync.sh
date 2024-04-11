@@ -29,6 +29,7 @@ else
     then
         COMMIT_MESSAGE="Modified on $(date)"
     fi
+    echo "Commiting changes: ${COMMIT_MESSAGE}"
     git commit -m "${COMMIT_MESSAGE}"
 fi
 GIT_BRANCH="$(git symbolic-ref --short HEAD)"
