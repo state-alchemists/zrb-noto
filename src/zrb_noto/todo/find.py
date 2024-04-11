@@ -35,5 +35,5 @@ def find_todo(*args, **kwargs):
     )
 
 
-create_sync_noto_task(name="pre-sync") >> find_todo
+create_sync_noto_task() >> find_todo
 runner.register(find_todo)

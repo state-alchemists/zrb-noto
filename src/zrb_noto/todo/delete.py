@@ -48,5 +48,5 @@ def delete_todo(*args, **kwargs):
     show_lines(task, *get_pretty_todo_item_lines(get_todo_items()))
 
 
-create_sync_noto_task(name="pre-sync") >> delete_item >> create_sync_noto_task(name="post-sync") >> delete_todo  # noqa
+create_sync_noto_task() >> delete_item >> create_sync_noto_task() >> delete_todo
 runner.register(delete_todo)

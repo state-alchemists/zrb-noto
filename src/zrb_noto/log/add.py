@@ -41,5 +41,5 @@ def add_log(*args, **kwargs):
     show_lines(task, *get_pretty_log_lines())
 
 
-create_sync_noto_task(name="pre-sync") >> add_item >> create_sync_noto_task(name="post-sync") >> add_log  # noqa
+create_sync_noto_task() >> add_item >> create_sync_noto_task() >> add_log
 runner.register(add_log)

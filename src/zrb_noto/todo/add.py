@@ -100,5 +100,5 @@ def add_todo(*args, **kwargs):
     show_lines(task, *get_pretty_todo_item_lines(get_todo_items()))
 
 
-create_sync_noto_task(name="pre-sync") >> add_item >> create_sync_noto_task(name="post-sync") >> add_todo  # noqa
+create_sync_noto_task() >> add_item >> create_sync_noto_task() >> add_todo
 runner.register(add_todo)

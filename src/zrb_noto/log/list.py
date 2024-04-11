@@ -30,5 +30,5 @@ def list_log(*args, **kwargs):
     show_lines(task, *get_pretty_log_lines(file_name))
 
 
-create_sync_noto_task(name="pre-sync") >> list_log
+create_sync_noto_task() >> list_log
 runner.register(list_log)

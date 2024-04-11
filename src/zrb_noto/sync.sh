@@ -24,12 +24,8 @@ if git diff --quiet && git diff --cached --quiet
 then
     echo "Nothing to commit"
 else
-    if [ -z "${COMMIT_MESSAGE}" ]
-    then
-        COMMIT_MESSAGE="Modified on $(date)"
-    fi
-    echo "Commiting changes: ${COMMIT_MESSAGE}"
-    git commit -m "${COMMIT_MESSAGE}"
+    echo "Commiting changes"
+    git commit -m "Save changes on $(date)"
 fi
 GIT_BRANCH="$(git symbolic-ref --short HEAD)"
 echo "Current branch: ${GIT_BRANCH}"

@@ -113,5 +113,5 @@ def edit_todo(*args, **kwargs):
     )
 
 
-create_sync_noto_task(name="pre-sync") >> edit_item >> create_sync_noto_task(name="post-sync") >> edit_todo  # noqa
+create_sync_noto_task() >> edit_item >> create_sync_noto_task() >> edit_todo
 runner.register(edit_todo)
