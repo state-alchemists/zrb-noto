@@ -25,7 +25,11 @@ then
     echo "Nothing to commit"
 else
     echo "Commiting changes"
-    git commit -m "Save changes on $(date)"
+    if [ -z "${COMMIT_MESSAGE}" ]
+    then
+        COMMIT_MESSAGE="Modified on $(date)"
+    fi
+    git commit -m "${COMMIT_MESSAGE}"
 fi
 GIT_BRANCH="$(git symbolic-ref --short HEAD)"
 echo "Current branch: ${GIT_BRANCH}"
