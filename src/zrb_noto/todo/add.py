@@ -1,4 +1,4 @@
-from zrb import Task, python_task, runner
+from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
@@ -15,17 +15,24 @@ from ._helper import (
 from ._input import (
     context_input,
     date_input,
-    description_input,
     keyval_input,
     priority_input,
     project_input,
 )
 
 
+new_description_input = StrInput(
+    name="description",
+    shortcut="t",
+    prompt="Description",
+    default="",
+)
+
+
 @python_task(
     name="add-item",
     inputs=[
-        description_input,
+        new_description_input,
         priority_input,
         project_input,
         context_input,
@@ -79,6 +86,7 @@ def add_item(*args, **kwargs):
         projects=projects,
         keyval=keyval,
     )
+    task.print_out(colored(f"Adding task: {item.description}", color="yellow"))
     append_todo_item(item=item)
 
 
@@ -86,7 +94,7 @@ def add_item(*args, **kwargs):
     name="add",
     group=noto_todo_group,
     inputs=[
-        description_input,
+        new_description_input,
         priority_input,
         project_input,
         context_input,

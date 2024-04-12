@@ -34,6 +34,7 @@ def delete_item(*args, **kwargs):
         )
         return
     item = items[0]
+    task.print_out(colored(f"Deleting task: {item.description}", color="yellow"))
     delete_todo_item(item)
 
 

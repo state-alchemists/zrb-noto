@@ -89,6 +89,7 @@ def edit_item(*args, **kwargs):
     if keyval_input.strip() != "":
         item.set_keyval(read_keyval_input(keyval_input))
     # save item
+    task.print_out(colored(f"Editing task: {item.description}", color="yellow"))
     replace_todo_item(item)
 
 

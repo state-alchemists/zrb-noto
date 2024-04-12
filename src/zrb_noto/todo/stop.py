@@ -36,6 +36,7 @@ def stop_item(*args, **kwargs):
         )
         return
     item = items[0]
+    task.print_out(colored(f"Stopping task: {item.description}", color="yellow"))
     stop_todo_item(item)
     append_log_item(f"__STOP__ {item.description}")
 

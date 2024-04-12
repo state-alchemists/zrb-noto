@@ -9,14 +9,13 @@ _EXISTING_PROJECT_STR = ",".join(get_existing_todo_projects())
 task_input = StrInput(
     name="task",
     shortcut="t",
-    prompt="Task",
+    prompt="Task name or id",
     prompt_required=True,
     default="",
 )
 
 description_input = StrInput(
     name="description",
-    shortcut="t",
     prompt="Description",
     default="",
 )
