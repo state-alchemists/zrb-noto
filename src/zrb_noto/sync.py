@@ -25,16 +25,8 @@ def create_sync_noto_task(
         envs=[
             LOCAL_REPO_DIR_ENV,
             REMOTE_GIT_URL_ENV,
-            Env(
-                name="IGNORE_ERROR",
-                os_name="",
-                default="1" if ignore_error else "0"
-            ),
-            Env(
-                name="COMMIT_MESSAGE",
-                os_name="",
-                default="{{input.commit_message}}"
-            ),
+            Env(name="IGNORE_ERROR", os_name="", default="1" if ignore_error else "0"),
+            Env(name="COMMIT_MESSAGE", os_name="", default="{{input.commit_message}}"),
         ],
         retry=retry,
         cmd_path=os.path.join(_CURRENT_DIR, "sync.sh"),

@@ -53,5 +53,10 @@ def complete_todo(*args, **kwargs):
     )
 
 
-create_sync_noto_task(name="pre-sync") >> complete_item >> create_sync_noto_task(name="post-sync") >> complete_todo  # noqa
+(
+    create_sync_noto_task(name="pre-sync")
+    >> complete_item
+    >> create_sync_noto_task(name="post-sync")
+    >> complete_todo
+)  # noqa
 runner.register(complete_todo)
