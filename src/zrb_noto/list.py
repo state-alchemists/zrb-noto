@@ -3,6 +3,7 @@ from typing import Any
 from zrb import Task, python_task, runner
 from zrb.helper.task import show_lines
 
+from ._config import IS_AUTO_SYNC
 from ._group import noto_group
 from .log._helper import get_pretty_log_lines
 from .sync import create_sync_noto_task
@@ -21,5 +22,6 @@ def list_noto(*args: Any, **kwargs: Any):
     show_lines(task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(items))
 
 
-create_sync_noto_task(name="pre-sync") >> list_noto
+if IS_AUTO_SYNC:
+    create_sync_noto_task(name="pre-sync") >> list_noto
 runner.register(list_noto)

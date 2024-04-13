@@ -2,6 +2,7 @@ from zrb import Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
+from .._config import IS_AUTO_SYNC
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
 from ._helper import delete_todo_item, get_pretty_todo_item_lines, get_todo_items
@@ -49,10 +50,14 @@ def delete_todo(*args, **kwargs):
     show_lines(task, *get_pretty_todo_item_lines(get_todo_items()))
 
 
-(
-    create_sync_noto_task(name="pre-sync")
-    >> delete_item
-    >> create_sync_noto_task(name="post-sync")
-    >> delete_todo
-)  # noqa
+if IS_AUTO_SYNC:
+    (
+        create_sync_noto_task(name="pre-sync")
+        >> delete_item
+        >> create_sync_noto_task(name="post-sync")
+        >> delete_todo
+    )
+else:
+    delete_item >> delete_todo
+
 runner.register(delete_todo)

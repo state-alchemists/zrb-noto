@@ -2,6 +2,7 @@ from zrb import Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
+from .._config import IS_AUTO_SYNC
 from ..log._helper import get_pretty_log_lines
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
@@ -114,10 +115,14 @@ def edit_todo(*args, **kwargs):
     )
 
 
-(
-    create_sync_noto_task(name="pre-sync")
-    >> edit_item
-    >> create_sync_noto_task(name="post-sync")
-    >> edit_todo
-)  # noqa
+if IS_AUTO_SYNC:
+    (
+        create_sync_noto_task(name="pre-sync")
+        >> edit_item
+        >> create_sync_noto_task(name="post-sync")
+        >> edit_todo
+    )  # noqa
+else:
+    edit_item >> edit_todo
+
 runner.register(edit_todo)

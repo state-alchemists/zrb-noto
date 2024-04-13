@@ -2,6 +2,7 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
+from .._config import IS_AUTO_SYNC
 from ..sync import create_sync_noto_task
 from ._group import noto_log_group
 from ._helper import append_log_item, get_pretty_log_lines
@@ -44,10 +45,14 @@ def add_log(*args, **kwargs):
     show_lines(task, *get_pretty_log_lines())
 
 
-(
-    create_sync_noto_task(name="pre-sync")
-    >> add_item
-    >> create_sync_noto_task(name="post-sync")
-    >> add_log
-)  # noqa
+if IS_AUTO_SYNC:
+    (
+        create_sync_noto_task(name="pre-sync")
+        >> add_item
+        >> create_sync_noto_task(name="post-sync")
+        >> add_log
+    )
+else:
+    add_item >> add_log
+
 runner.register(add_log)

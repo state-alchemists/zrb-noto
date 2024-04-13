@@ -2,7 +2,7 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
-from .._config import CURRENT_TIME
+from .._config import CURRENT_TIME, IS_AUTO_SYNC
 from ..sync import create_sync_noto_task
 from ._data import Item
 from ._group import noto_todo_group
@@ -107,10 +107,13 @@ def add_todo(*args, **kwargs):
     show_lines(task, *get_pretty_todo_item_lines(get_todo_items()))
 
 
-(
-    create_sync_noto_task(name="pre-sync")
-    >> add_item
-    >> create_sync_noto_task(name="post-sync")
-    >> add_todo
-)  # noqa
+if IS_AUTO_SYNC:
+    (
+        create_sync_noto_task(name="pre-sync")
+        >> add_item
+        >> create_sync_noto_task(name="post-sync")
+        >> add_todo
+    )
+else:
+    add_item >> add_todo
 runner.register(add_todo)
