@@ -5,6 +5,7 @@ from .log import add_log, list_log, noto_log_group
 from .sync import sync_noto
 from .todo import (
     add_todo,
+    archive_todo,
     complete_todo,
     delete_todo,
     edit_todo,
@@ -24,6 +25,7 @@ assert add_log
 assert list_log
 assert noto_todo_group
 assert add_todo
+assert archive_todo
 assert complete_todo
 assert delete_todo
 assert edit_todo

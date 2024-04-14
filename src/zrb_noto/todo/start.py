@@ -38,7 +38,7 @@ def start_item(*args, **kwargs):
     item = items[0]
     task.print_out(colored(f"Starting task: {item.description}", color="yellow"))
     start_todo_item(item)
-    append_log_item(f"__START__ {item.description}")
+    append_log_item(f"__START__ [{item.get_id()}] {item.description}")
 
 
 @python_task(

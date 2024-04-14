@@ -9,9 +9,12 @@ from zrb.helper.accessories.color import colored
 from .._config import CURRENT_TIME, LOG_ABS_DIR_PATH
 
 _STATUS_COLOR_MAP = {
-    "START": "cyan",
-    "COMPLETE": "green",
-    "STOP": "yellow",
+    "START": "light_cyan",
+    "COMPLETE": "light_green",
+    "STOP": "light_yellow",
+    "ADD": "cyan",
+    "EDIT": "green",
+    "DELETE": "yellow",
 }
 
 

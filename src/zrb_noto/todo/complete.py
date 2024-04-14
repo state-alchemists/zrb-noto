@@ -38,7 +38,7 @@ def complete_item(*args, **kwargs):
     item = items[0]
     task.print_out(colored(f"Completing task: {item.description}", color="yellow"))
     complete_todo_item(item)
-    append_log_item(f"__COMPLETE__ {item.description}")
+    append_log_item(f"__COMPLETE__ [{item.get_id()}] {item.description}")
 
 
 @python_task(

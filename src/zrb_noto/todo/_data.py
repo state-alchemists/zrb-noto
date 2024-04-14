@@ -210,6 +210,9 @@ class Item:
         status_str = STATUS_ICON_MAP.get(status)
         return status_str
 
+    def get_id(self):
+        return self.keyval.get("id", "xxxx-xxxx-xxxx")
+
     def get_status(self):
         if self.completed:
             return "COMPLETED"

@@ -3,6 +3,7 @@ from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
 from .._config import IS_AUTO_SYNC
+from ..log._helper import append_log_item, get_pretty_log_lines
 from ..log._helper import get_pretty_log_lines
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
@@ -92,6 +93,7 @@ def edit_item(*args, **kwargs):
     # save item
     task.print_out(colored(f"Editing task: {item.description}", color="yellow"))
     replace_todo_item(item)
+    append_log_item(f"__EDIT__ [{item.get_id()}] {item.description}")
 
 
 @python_task(
@@ -121,7 +123,7 @@ if IS_AUTO_SYNC:
         >> edit_item
         >> create_sync_noto_task(name="post-sync")
         >> edit_todo
-    )  # noqa
+    )
 else:
     edit_item >> edit_todo
 

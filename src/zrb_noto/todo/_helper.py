@@ -68,7 +68,7 @@ def append_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH) -> str:
     dir_path.mkdir(parents=True, exist_ok=True)
     items = get_todo_items(file_name=file_name)
     items.append(item)
-    _write_items(items, file_name)
+    save_items(items, file_name)
 
 
 def get_todo_items(
@@ -119,7 +119,7 @@ def delete_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
         for old_item in get_todo_items(file_name=file_name)
         if old_item.description != item.old_description
     ]
-    _write_items(items, file_name)
+    save_items(items, file_name)
 
 
 def replace_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
@@ -128,7 +128,7 @@ def replace_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
         if item.old_description == existing_item.description:
             items[index] = item
             break
-    _write_items(items, file_name)
+    save_items(items, file_name)
 
 
 def get_existing_todo_contexts(file_name: str = TODO_ABS_FILE_PATH) -> List[str]:
@@ -171,7 +171,7 @@ def read_keyval_input(keyval_input: str) -> Mapping[str, str]:
     return keyval
 
 
-def _write_items(items: List[Item], file_name: str = TODO_ABS_FILE_PATH):
+def save_items(items: List[Item], file_name: str = TODO_ABS_FILE_PATH):
     items = _sort_items(items)
     with open(file_name, "w") as file:
         file.write("\n".join([item.as_str() for item in items]))

@@ -3,6 +3,7 @@ from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
 from .._config import CURRENT_TIME, IS_AUTO_SYNC
+from ..log._helper import append_log_item, get_pretty_log_lines
 from ..sync import create_sync_noto_task
 from ._data import Item
 from ._group import noto_todo_group
@@ -87,6 +88,7 @@ def add_item(*args, **kwargs):
     )
     task.print_out(colored(f"Adding task: {item.description}", color="yellow"))
     append_todo_item(item=item)
+    append_log_item(f"__ADD__ [{item.get_id()}] {item.description}")
 
 
 @python_task(
@@ -104,7 +106,9 @@ def add_item(*args, **kwargs):
 )
 def add_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
-    show_lines(task, *get_pretty_todo_item_lines(get_todo_items()))
+    show_lines(
+        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(get_todo_items())
+    )
 
 
 if IS_AUTO_SYNC:
@@ -116,4 +120,5 @@ if IS_AUTO_SYNC:
     )
 else:
     add_item >> add_todo
+
 runner.register(add_todo)
