@@ -1,15 +1,11 @@
 from zrb import StrInput, Task, python_task, runner
 from zrb.helper.task import show_lines
 
-from .._config import IS_AUTO_SYNC, TODO_ABS_FILE_PATH, DONE_ABS_FILE_PATH
+from .._config import DONE_ABS_FILE_PATH, IS_AUTO_SYNC, TODO_ABS_FILE_PATH
 from ..log._helper import get_pretty_log_lines
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
-from ._helper import (
-    get_pretty_todo_item_lines,
-    get_todo_items,
-    save_items,
-)
+from ._helper import get_pretty_todo_item_lines, get_todo_items, save_items
 
 new_description_input = StrInput(
     name="description",

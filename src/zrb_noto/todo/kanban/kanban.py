@@ -3,7 +3,7 @@ from zrb.helper.task import show_lines
 
 from ..._config import IS_AUTO_SYNC
 from ..._helper import get_screen_width
-from ...sync import sync_noto, create_sync_noto_task
+from ...sync import create_sync_noto_task, sync_noto
 from .._group import noto_todo_group
 from .._helper import get_todo_items
 from ._helper import get_kanban_lines

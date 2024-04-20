@@ -1,10 +1,9 @@
-from zrb import Task, python_task, runner
+from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
 from .._config import IS_AUTO_SYNC
 from ..log._helper import append_log_item, get_pretty_log_lines
-from ..log._helper import get_pretty_log_lines
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
 from ._helper import (
@@ -18,9 +17,14 @@ from ._input import (
     date_input,
     description_input,
     keyval_input,
-    priority_input,
     project_input,
     task_input,
+)
+
+priority_input = StrInput(
+    name="priority",
+    prompt="Priority",
+    default="",
 )
 
 
