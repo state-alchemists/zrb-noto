@@ -30,8 +30,8 @@ def archive_item(*args, **kwargs):
     ]
     todo_items = incompleted_todo_items
     archived_todo_items += completed_todo_items
-    save_items(items=archived_todo_items, file_name=DONE_ABS_FILE_PATH)
-    save_items(items=todo_items, file_name=TODO_ABS_FILE_PATH)
+    save_items(file_name=DONE_ABS_FILE_PATH, items=archived_todo_items)
+    save_items(file_name=TODO_ABS_FILE_PATH, items=todo_items)
 
 
 @python_task(
@@ -42,7 +42,10 @@ def archive_item(*args, **kwargs):
 def archive_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
     show_lines(
-        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(get_todo_items())
+        task,
+        *get_pretty_log_lines(file_name=TODO_ABS_FILE_PATH),
+        "",
+        *get_pretty_todo_item_lines(get_todo_items(file_name=TODO_ABS_FILE_PATH))
     )
 
 

@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import Optional
 
 from zrb import CmdTask, Env, Group, StrInput, Task, runner
 
@@ -14,7 +14,7 @@ def create_sync_noto_task(
     group: Optional[Group] = None,
     retry: int = 0,
     ignore_error: bool = True,
-    upstreams: List[Task] = [],
+    upstreams: list[Task] = [],
     custom_commit_message: bool = False,
 ) -> Task:
     sync_noto = CmdTask(

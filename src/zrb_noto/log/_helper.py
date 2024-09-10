@@ -2,11 +2,10 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
 
 from zrb.helper.accessories.color import colored
 
-from .._config import CURRENT_TIME, LOG_ABS_DIR_PATH
+from .._config import LOG_ABS_DIR_PATH
 
 _STATUS_COLOR_MAP = {
     "START": "light_cyan",
@@ -18,7 +17,7 @@ _STATUS_COLOR_MAP = {
 }
 
 
-def get_log_file_name(current_time: datetime = CURRENT_TIME) -> str:
+def get_log_file_name(current_time: datetime) -> str:
     year = current_time.year
     month = current_time.strftime("%m")
     date = current_time.strftime("%d")
@@ -27,7 +26,7 @@ def get_log_file_name(current_time: datetime = CURRENT_TIME) -> str:
     )
 
 
-def append_log_item(text: str, current_time: datetime = CURRENT_TIME) -> str:
+def append_log_item(text: str, current_time: datetime) -> str:
     file_name = get_log_file_name(current_time=current_time)
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
@@ -39,16 +38,12 @@ def append_log_item(text: str, current_time: datetime = CURRENT_TIME) -> str:
         file.write("\n")
 
 
-def _get_log_lines(file_name: Optional[str] = None) -> List[str]:
-    if file_name is None:
-        file_name = get_log_file_name()
+def _get_log_lines(file_name: str) -> list[str]:
     log_str = get_log(file_name)
     return log_str.split("\n")
 
 
-def get_pretty_log_lines(file_name: Optional[str] = None) -> List[str]:
-    if file_name is None:
-        file_name = get_log_file_name()
+def get_pretty_log_lines(file_name: str) -> list[str]:
     log_str = get_log(file_name)
     for keyword, color in _STATUS_COLOR_MAP.items():
         log_str = re.sub(
@@ -62,9 +57,7 @@ def get_pretty_log_lines(file_name: Optional[str] = None) -> List[str]:
     return log_str.split("\n")
 
 
-def get_log(file_name: Optional[str] = None) -> str:
-    if file_name is None:
-        file_name = get_log_file_name()
+def get_log(file_name: str) -> str:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
     if not os.path.isfile(file_name):

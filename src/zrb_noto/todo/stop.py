@@ -2,8 +2,8 @@ from zrb import Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
-from .._config import IS_AUTO_SYNC
-from ..log._helper import append_log_item, get_pretty_log_lines
+from .._config import CURRENT_TIME, IS_AUTO_SYNC, TODO_ABS_FILE_PATH
+from ..log._helper import append_log_item, get_log_file_name, get_pretty_log_lines
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
 from ._helper import get_pretty_todo_item_lines, get_todo_items, stop_todo_item
@@ -19,13 +19,15 @@ from ._input import task_input
 def stop_item(*args, **kwargs):
     task: Task = kwargs.get("_task")
     search = kwargs.get("task")
-    items = get_todo_items(search=search, completed=False)
+    items = get_todo_items(file_name=TODO_ABS_FILE_PATH, search=search, completed=False)
     if len(items) == 0:
         show_lines(
             task,
             colored("⚠️  NOT STOPPED: Task not found", color="light_red"),
             "List of available tasks:",
-            *get_pretty_todo_item_lines(get_todo_items(completed=False)),
+            *get_pretty_todo_item_lines(
+                get_todo_items(file_name=TODO_ABS_FILE_PATH, completed=False)
+            ),
         )
         return
     if len(items) > 1:
@@ -38,8 +40,10 @@ def stop_item(*args, **kwargs):
         return
     item = items[0]
     task.print_out(colored(f"Stopping task: {item.description}", color="yellow"))
-    stop_todo_item(item)
-    append_log_item(f"__STOP__ [{item.get_id()}] {item.description}")
+    stop_todo_item(file_name=TODO_ABS_FILE_PATH, item=item)
+    append_log_item(
+        f"__STOP__ [{item.get_id()}] {item.description}", current_time=CURRENT_TIME
+    )
 
 
 @python_task(
@@ -51,7 +55,10 @@ def stop_item(*args, **kwargs):
 def stop_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
     show_lines(
-        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(get_todo_items())
+        task,
+        *get_pretty_log_lines(file_name=get_log_file_name(current_time=CURRENT_TIME)),
+        "",
+        *get_pretty_todo_item_lines(get_todo_items(file_name=TODO_ABS_FILE_PATH)),
     )
 
 

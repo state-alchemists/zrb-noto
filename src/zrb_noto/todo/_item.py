@@ -1,6 +1,7 @@
 import re
+from collections.abc import Mapping
 from datetime import datetime
-from typing import List, Mapping, Optional
+from typing import Optional
 
 from zrb.helper.accessories.color import colored
 from zrb.helper.accessories.name import get_random_name
@@ -41,8 +42,8 @@ class Item:
         priority: Optional[str] = None,
         completion_date: Optional[datetime] = None,
         creation_date: Optional[datetime] = None,
-        contexts: List[str] = [],
-        projects: List[str] = [],
+        contexts: list[str] = [],
+        projects: list[str] = [],
         keyval: Mapping[str, str] = {},
     ):
         self.completed = completed
@@ -59,8 +60,8 @@ class Item:
 
     def match(
         self,
-        contexts: List[str] = [],
-        projects: List[str] = [],
+        contexts: list[str] = [],
+        projects: list[str] = [],
         search: str = "",
         completed: Optional[bool] = None,
     ):
@@ -274,7 +275,7 @@ class Item:
         return f"{completed_str}{priority_str}{completion_date_str}{creation_date_str}{self.description}{project_str}{context_str}{keyval_str}"  # noqa
 
 
-def _has_intersection(list1: List[str], list2: List[str]):
+def _has_intersection(list1: list[str], list2: list[str]):
     set1 = set(list1)
     set2 = set(list2)
     return not set1.isdisjoint(set2)

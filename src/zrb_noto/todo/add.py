@@ -2,10 +2,9 @@ from zrb import StrInput, Task, python_task, runner
 from zrb.helper.accessories.color import colored
 from zrb.helper.task import show_lines
 
-from .._config import CURRENT_TIME, IS_AUTO_SYNC
-from ..log._helper import append_log_item, get_pretty_log_lines
+from .._config import CURRENT_TIME, IS_AUTO_SYNC, TODO_ABS_FILE_PATH
+from ..log._helper import append_log_item, get_log_file_name, get_pretty_log_lines
 from ..sync import create_sync_noto_task
-from ._data import Item
 from ._group import noto_todo_group
 from ._helper import (
     append_todo_item,
@@ -20,6 +19,7 @@ from ._input import (
     priority_input,
     project_input,
 )
+from ._item import Item
 
 new_description_input = StrInput(
     name="description",
@@ -48,7 +48,9 @@ def add_item(*args, **kwargs):
         task.print_err(colored("⚠️  NOT ADDED: Description cannot be empty"))
         return
     duplication = [
-        item for item in get_todo_items() if item.old_description == description
+        item
+        for item in get_todo_items(file_name=TODO_ABS_FILE_PATH)
+        if item.old_description == description
     ]
     if len(duplication) > 0:
         task.print_err(
@@ -87,8 +89,8 @@ def add_item(*args, **kwargs):
         keyval=keyval,
     )
     task.print_out(colored(f"Adding task: {item.description}", color="yellow"))
-    append_todo_item(item=item)
-    append_log_item(f"__ADD__ [{item.get_id()}] {item.description}")
+    append_todo_item(file_name=TODO_ABS_FILE_PATH, item=item)
+    append_log_item(f"__ADD__ [{item.get_id()}] {item.description}", CURRENT_TIME)
 
 
 @python_task(
@@ -107,7 +109,10 @@ def add_item(*args, **kwargs):
 def add_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
     show_lines(
-        task, *get_pretty_log_lines(), "", *get_pretty_todo_item_lines(get_todo_items())
+        task,
+        *get_pretty_log_lines(get_log_file_name(CURRENT_TIME)),
+        "",
+        *get_pretty_todo_item_lines(get_todo_items(file_name=TODO_ABS_FILE_PATH)),
     )
 
 

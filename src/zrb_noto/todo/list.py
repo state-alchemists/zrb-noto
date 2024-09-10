@@ -1,7 +1,7 @@
 from zrb import Task, python_task, runner
 from zrb.helper.task import show_lines
 
-from .._config import IS_AUTO_SYNC
+from .._config import IS_AUTO_SYNC, TODO_ABS_FILE_PATH
 from ..sync import create_sync_noto_task
 from ._group import noto_todo_group
 from ._helper import get_pretty_todo_item_lines, get_todo_items
@@ -16,7 +16,7 @@ def list_todo(*args, **kwargs):
     task: Task = kwargs.get("_task")
     show_lines(
         task,
-        *get_pretty_todo_item_lines(get_todo_items()),
+        *get_pretty_todo_item_lines(get_todo_items(file_name=TODO_ABS_FILE_PATH)),
     )
 
 

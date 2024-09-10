@@ -1,12 +1,12 @@
 import os
 import re
+from collections.abc import Mapping
 from datetime import datetime
 from pathlib import Path
-from typing import List, Mapping, Optional
+from typing import Optional
 
-from .._config import TODO_ABS_FILE_PATH
 from .._helper import get_screen_width
-from ._data import Item
+from ._item import Item
 
 SCREEN_WIDTH = get_screen_width()
 
@@ -63,21 +63,21 @@ def parse_todo_item(line: str) -> Item:
     )
 
 
-def append_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH) -> str:
+def append_todo_item(file_name: str, item: Item) -> str:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
     items = get_todo_items(file_name=file_name)
     items.append(item)
-    save_items(items, file_name)
+    save_items(file_name=file_name, items=items)
 
 
 def get_todo_items(
-    contexts: List[str] = [],
-    projects: List[str] = [],
+    file_name: str,
+    contexts: list[str] = [],
+    projects: list[str] = [],
     search: str = "",
     completed: Optional[bool] = None,
-    file_name: str = TODO_ABS_FILE_PATH,
-) -> List[Item]:
+) -> list[Item]:
     dir_path = Path(os.path.dirname(file_name))
     dir_path.mkdir(parents=True, exist_ok=True)
     if not os.path.isfile(file_name):
@@ -85,7 +85,7 @@ def get_todo_items(
     with open(file_name, "r") as file:
         content = file.read()
     lines = content.split("\n")
-    items: List[Item] = []
+    items: list[Item] = []
     for line in lines:
         line = line.strip()
         if not line:
@@ -98,40 +98,40 @@ def get_todo_items(
     return _sort_items(items)
 
 
-def stop_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
+def stop_todo_item(file_name: str, item: Item):
     item.stop()
-    replace_todo_item(item, file_name)
+    replace_todo_item(file_name, item)
 
 
-def start_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
+def start_todo_item(file_name: str, item: Item):
     item.start()
-    replace_todo_item(item, file_name)
+    replace_todo_item(file_name, item)
 
 
-def complete_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
+def complete_todo_item(file_name: str, item: Item):
     item.complete()
-    replace_todo_item(item, file_name)
+    replace_todo_item(file_name, item)
 
 
-def delete_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
+def delete_todo_item(file_name: str, item: Item):
     items = [
         old_item
         for old_item in get_todo_items(file_name=file_name)
         if old_item.description != item.old_description
     ]
-    save_items(items, file_name)
+    save_items(file_name=file_name, items=items)
 
 
-def replace_todo_item(item: Item, file_name: str = TODO_ABS_FILE_PATH):
+def replace_todo_item(file_name: str, item: Item):
     items = get_todo_items(file_name=file_name)
     for index, existing_item in enumerate(items):
         if item.old_description == existing_item.description:
             items[index] = item
             break
-    save_items(items, file_name)
+    save_items(file_name=file_name, items=items)
 
 
-def get_existing_todo_contexts(file_name: str = TODO_ABS_FILE_PATH) -> List[str]:
+def get_existing_todo_contexts(file_name: str) -> list[str]:
     existing_contexts = set()
     items = get_todo_items(file_name=file_name)
     for item in items:
@@ -139,7 +139,7 @@ def get_existing_todo_contexts(file_name: str = TODO_ABS_FILE_PATH) -> List[str]
     return sorted(list(existing_contexts))
 
 
-def get_existing_todo_projects(file_name: str = TODO_ABS_FILE_PATH) -> List[str]:
+def get_existing_todo_projects(file_name: str) -> list[str]:
     existing_projects = set()
     items = get_todo_items(file_name=file_name)
     for item in items:
@@ -148,8 +148,8 @@ def get_existing_todo_projects(file_name: str = TODO_ABS_FILE_PATH) -> List[str]
 
 
 def get_pretty_todo_item_lines(
-    items: List[Item], screen_width: int = SCREEN_WIDTH
-) -> List[str]:
+    items: list[Item], screen_width: int = SCREEN_WIDTH
+) -> list[str]:
     if screen_width <= 80:
         return [
             "      Description",
@@ -171,14 +171,14 @@ def read_keyval_input(keyval_input: str) -> Mapping[str, str]:
     return keyval
 
 
-def save_items(items: List[Item], file_name: str = TODO_ABS_FILE_PATH):
+def save_items(file_name: str, items: list[Item]):
     items = _sort_items(items)
     with open(file_name, "w") as file:
         file.write("\n".join([item.as_str() for item in items]))
         file.write("\n")
 
 
-def _sort_items(items: List[Item]) -> List[Item]:
+def _sort_items(items: list[Item]) -> list[Item]:
     return sorted(
         items,
         key=lambda item: (
@@ -190,7 +190,7 @@ def _sort_items(items: List[Item]) -> List[Item]:
     )
 
 
-def _has_intersection(list1: List[str], list2: List[str]):
+def _has_intersection(list1: list[str], list2: list[str]):
     set1 = set(list1)
     set2 = set(list2)
     return not set1.isdisjoint(set2)

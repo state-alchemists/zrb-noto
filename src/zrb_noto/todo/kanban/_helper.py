@@ -1,12 +1,12 @@
-from typing import List, Mapping
+from collections.abc import Mapping
 
 from zrb.helper.accessories.color import colored
 
-from .._data import STATUS_ATTRIBUTE_MAP, STATUS_COLOR_MAP, Item
+from .._item import STATUS_ATTRIBUTE_MAP, STATUS_COLOR_MAP, Item
 
 
-def get_kanban_lines(items: List[Item], screen_width: int) -> List[str]:
-    status_lines: Mapping[str][List[str]] = {}
+def get_kanban_lines(items: list[Item], screen_width: int) -> list[str]:
+    status_lines: Mapping[str][list[str]] = {}
     status_max_length: Mapping[str][int] = {}
     status_list = ("NEW", "STOPPED", "STARTED", "COMPLETED")
     max_width = max(round(screen_width / 4), 15)
@@ -52,10 +52,10 @@ def get_kanban_lines(items: List[Item], screen_width: int) -> List[str]:
 
 
 def _get_kanban_body(
-    status_list: List[str],
+    status_list: list[str],
     status_max_length: Mapping[str, int],
-    status_lines: Mapping[str, List[str]],
-) -> List[str]:
+    status_lines: Mapping[str, list[str]],
+) -> list[str]:
     lines = []
     index = 0
     while True:
@@ -79,7 +79,7 @@ def _get_kanban_body(
 
 
 def _get_kanban_header(
-    status_list: List[str], status_max_length: Mapping[str, int]
+    status_list: list[str], status_max_length: Mapping[str, int]
 ) -> str:
     # header
     header = ""
@@ -94,7 +94,7 @@ def _get_kanban_header(
 
 
 def _get_kanban_separator(
-    status_list: List[str], status_max_length: Mapping[str, int]
+    status_list: list[str], status_max_length: Mapping[str, int]
 ) -> str:
     max_length = sum([status_max_length[status] + 3 for status in status_list])
     return "-" * max_length
